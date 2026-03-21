@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft Rewards</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
+</head>
+<body>
+
+<div class="container">
+  <!-- Left Menu -->
+  <div class="menu">
+    <button onclick="showPage('rewards')">🎁 Rewards</button>
+    <button onclick="showPage('discord')">💬 Discord</button>
+    <button onclick="showPage('about')">ℹ️ About</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div id="welcome" class="page active">
+      <h2>Welcome!</h2>
+      <p>Please select an option from the menu.</p>
+    </div>
+
+    <div id="rewards" class="page">
+      <h2>Rewards</h2>
+      <input id="username" placeholder="Minecraft Username">
+      <div class="buttons">
+        <button id="dailyBtn">🎁 Daily Reward</button>
+        <button id="showSpinnerBtn">🎡 Spinner</button>
+        <button id="resetBtn">🔄 Reset Spinner</button>
+      </div>
+
+      <div id="wheelContainer">
+        <div class="pointer">▼</div>
+        <canvas id="wheel" width="400" height="400"></canvas>
+        <button id="spinBtn">Spin</button>
+      </div>
+
+      <p id="result"></p>
+    </div>
+
+    <div id="discord" class="page">
+      <h2>Discord</h2>
+      <p>Join our Discord server for rewards!</p>
+      <a href="#" target="_blank">Join Discord</a>
+    </div>
+
+    <div id="about" class="page">
+      <h2>About Server</h2>
+      <p>This is a Minecraft rewards system.</p>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
