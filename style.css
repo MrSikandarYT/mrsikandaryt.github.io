@@ -1,108 +1,126 @@
-/* General */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
 body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#0f172a;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  min-height:100vh;
+  font-family: 'Press Start 2P', cursive;
+  background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('bg.jpg') center/cover no-repeat fixed;
+  color: #00ff41;
+  background-color: #0a0a0a;
 }
 
-/* Container */
-.container {
-  display:flex;
-  width:100%;
-  max-width:1000px;
-  margin-top:20px;
+header {
+  background: #111;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  border-bottom: 3px solid #00ff41;
 }
 
-/* Menu */
-.menu {
-  width:200px;
-  background:#1b1b1b;
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.logo { font-size: 1.8rem; text-shadow: 0 0 10px #00ff41; }
+
+.hamburger {
+  font-size: 2.2rem;
+  background: none;
+  border: none;
+  color: #00ff41;
+  cursor: pointer;
+  display: none;
 }
 
-.menu button {
-  padding:12px;
-  background:#22c55e;
-  border:none;
-  border-radius:8px;
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  width: 260px;
+  height: calc(100vh - 60px);
+  background: rgba(10,10,10,0.95);
+  padding: 20px;
+  border-right: 4px solid #00ff41;
+  transition: 0.3s;
 }
 
-.menu button:hover { background:#16a34a; }
-
-/* Content */
-.content {
-  flex:1;
-  padding:20px;
+.menu-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin: 8px 0;
+  background: #111;
+  color: #00ff41;
+  border: 3px solid #00ff41;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.page { display:none; }
-.page.active { display:block; }
+.menu-btn:hover { background: #00ff41; color: #000; transform: scale(1.05); }
 
-input {
-  padding:10px;
-  width:200px;
-  margin-bottom:10px;
-  border-radius:5px;
-  border:none;
+#main-content { margin-left: 260px; padding: 30px; min-height: 100vh; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.hero {
+  text-align: center;
+  padding: 50px 20px;
+  background: rgba(0,0,0,0.75);
+  border: 5px solid #00ff41;
+  border-radius: 20px;
 }
 
-.buttons { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.server-info p { font-size: 1.15rem; margin: 12px 0; text-shadow: 0 0 10px #00ff41; }
 
-button {
-  cursor:pointer;
-  transition:0.2s;
-  border-radius:8px;
-  font-weight:bold;
+/* Rewards styling */
+.username-input, .claim-btn, .spin-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+  background: #111;
+  border: 4px solid #00ff41;
+  color: #fff;
+  margin: 10px 0;
 }
 
-button.disabled {
-  background:#777;
-  cursor:not-allowed;
+.claim-btn, .spin-btn {
+  background: #00ff41;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-/* Spinner */
-#wheelContainer {
-  position:relative;
-  width:400px;
-  height:400px;
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
+.claim-btn:disabled, .spin-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.wheel-container {
+  position: relative;
+  width: 320px;
+  margin: 30px auto;
+}
+
+#wheel {
+  border: 10px solid #00ff41;
+  border-radius: 50%;
+  box-shadow: 0 0 40px #00ff41;
 }
 
 .pointer {
-  position:absolute;
-  top:-20px;
-  font-size:30px;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  font-size: 3.5rem;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 
-canvas#wheel, #spinBtn {
-  display: none;
-  border-radius:50%;
+/* Mobile */
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #main-content { margin-left: 0; }
 }
-
-#spinBtn {
-  margin-top:10px;
-  padding:10px 20px;
-  background:#f59e0b;
-  color:black;
-  font-weight:bold;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-#spinBtn:hover { background:#d97706; }
