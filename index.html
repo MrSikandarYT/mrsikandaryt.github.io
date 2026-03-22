@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- === YOUR MONETAG CODE (KEPT EXACTLY) === -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="222132" async data-cfasync="false"></script>
   <meta charset="UTF-8">
   <title>Minecraft Rewards</title>
@@ -8,53 +9,71 @@
   <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
 </head>
 <body>
+  <header>
+    <div class="logo">🟩 Minecraft Rewards</div>
+    <button id="hamburger" class="hamburger">☰</button>
+  </header>
 
-<div class="container">
-  <!-- Left Menu -->
-  <div class="menu">
-    <button onclick="showPage('rewards')">🎁 Rewards</button>
-    <button onclick="showPage('discord')">💬 Discord</button>
-    <button onclick="showPage('about')">ℹ️ About</button>
-  </div>
+  <nav id="sidebar">
+    <button onclick="showPage('home')" class="menu-btn">🏠 Home</button>
+    <button onclick="showPage('rewards')" class="menu-btn">🎁 Rewards</button>
+    <button onclick="showPage('discord')" class="menu-btn">💬 Discord</button>
+    <button onclick="showPage('mrsikandar')" class="menu-btn">👑 MrSikandar</button>
+  </nav>
 
-  <!-- Main Content -->
-  <div class="content">
-    <div id="welcome" class="page active">
-      <h2>Welcome!</h2>
-      <p>Please select an option from the menu.</p>
+  <main id="main-content">
+    <!-- HOME - Server Info (exactly what you asked) -->
+    <div id="home" class="page active">
+      <div class="hero">
+        <h1>Welcome to the Ultimate Minecraft Server!</h1>
+        <div class="server-info">
+          <p><strong>Java IP:</strong> play.mrsikandar.yt</p>
+          <p><strong>Bedrock IP:</strong> play.mrsikandar.yt:19132</p>
+          <p><strong>Version:</strong> 1.21.4</p>
+          <p><strong>Gamemodes:</strong> Survival • Creative • Skyblock • OneBlock</p>
+          <p><strong>Useful Commands:</strong><br>/spawn • /home • /tpa • /shop • /daily • /rewards</p>
+        </div>
+        <p class="join-text">Claim daily rewards & spin for epic prizes!</p>
+      </div>
     </div>
 
+    <!-- REWARDS PAGE -->
     <div id="rewards" class="page">
-      <h2>Rewards</h2>
-      <input id="username" placeholder="Minecraft Username">
-      <div class="buttons">
-        <button id="dailyBtn">🎁 Daily Reward</button>
-        <button id="showSpinnerBtn">🎡 Spinner</button>
-        <button id="resetBtn">🔄 Reset Spinner</button>
+      <h2>🎁 Daily Rewards & Spinner</h2>
+      <input type="text" id="username" placeholder="Enter Minecraft Username" class="username-input">
+      
+      <div class="daily-section">
+        <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
+        <p id="streak-info">Current Streak: <span id="streak-day">0</span> days</p>
+        <p id="spins-left">Spins Left: <span id="spins-count">0</span></p>
       </div>
 
-      <div id="wheelContainer">
-        <div class="pointer">▼</div>
-        <canvas id="wheel" width="400" height="400"></canvas>
-        <button id="spinBtn">Spin</button>
+      <div id="spinner-section">
+        <div class="wheel-container">
+          <div class="pointer">▼</div>
+          <canvas id="wheel" width="320" height="320"></canvas>
+          <button id="spinBtn" class="spin-btn">SPIN NOW</button>
+        </div>
+        <p id="spin-result"></p>
       </div>
-
-      <p id="result"></p>
     </div>
 
+    <!-- DISCORD -->
     <div id="discord" class="page">
-      <h2>Discord</h2>
-      <p>Join our Discord server for rewards!</p>
-      <a href="#" target="_blank">Join Discord</a>
+      <h2>💬 Join Our Discord</h2>
+      <p>Get exclusive rewards, announcements & chat with everyone!</p>
+      <a href="https://discord.gg/yourserver" target="_blank" class="discord-btn">JOIN DISCORD SERVER</a>
+      <p class="note">Replace the link above with your real Discord invite</p>
     </div>
 
-    <div id="about" class="page">
-      <h2>About Server</h2>
-      <p>This is a Minecraft rewards system.</p>
+    <!-- MR SIKANDAR -->
+    <div id="mrsikandar" class="page">
+      <h2>👑 About MrSikandarYT</h2>
+      <p>Official server owner & Minecraft content creator.</p>
+      <a href="https://youtube.com/@MrSikandarYT" target="_blank" class="yt-btn">YouTube Channel</a>
     </div>
-  </div>
-</div>
+  </main>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
