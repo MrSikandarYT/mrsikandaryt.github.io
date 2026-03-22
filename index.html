@@ -1,51 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- === YOUR MONETAG CODE (KEPT EXACTLY) === -->
+  <!-- Monetag code - keep it exactly as is -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="222132" async data-cfasync="false"></script>
   <meta charset="UTF-8">
+  <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
   <title>Minecraft Rewards</title>
   <link rel="stylesheet" href="style.css">
-  <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
 </head>
 <body>
+
   <header>
     <div class="logo">🟩 Minecraft Rewards</div>
     <button id="hamburger" class="hamburger">☰</button>
   </header>
 
   <nav id="sidebar">
-    <button onclick="showPage('home')" class="menu-btn">🏠 Home</button>
-    <button onclick="showPage('rewards')" class="menu-btn">🎁 Rewards</button>
-    <button onclick="showPage('discord')" class="menu-btn">💬 Discord</button>
-    <button onclick="showPage('mrsikandar')" class="menu-btn">👑 MrSikandar</button>
+    <button class="menu-btn" data-page="home">🏠 Home</button>
+    <button class="menu-btn" data-page="rewards">🎁 Rewards</button>
+    <button class="menu-btn" data-page="discord">💬 Discord</button>
+    <button class="menu-btn" data-page="mrsikandar">👑 MrSikandar</button>
   </nav>
 
   <main id="main-content">
-    <!-- HOME - Server Info (exactly what you asked) -->
+    <!-- HOME -->
     <div id="home" class="page active">
       <div class="hero">
         <h1>Welcome to the Ultimate Minecraft Server!</h1>
         <div class="server-info">
-          <p><strong>Java IP:</strong> play.mrsikandar.yt</p>
-          <p><strong>Bedrock IP:</strong> play.mrsikandar.yt:19132</p>
+          <p><strong>Java IP:</strong> Fakelapataop.aternos.me:43833</p>
+          <p><strong>Bedrock IP:</strong> Fakelapataop.aternos.me Port: 43833</p>
           <p><strong>Version:</strong> 1.21.4</p>
-          <p><strong>Gamemodes:</strong> Survival • Creative • Skyblock • OneBlock</p>
-          <p><strong>Useful Commands:</strong><br>/spawn • /home • /tpa • /shop • /daily • /rewards</p>
+          <p><strong>Gamemodes:</strong> Survival • Lifesteal </p>
+          <p><strong>Useful Commands:</strong><br>/spawn • /home • /tpa • /shop </p>
         </div>
         <p class="join-text">Claim daily rewards & spin for epic prizes!</p>
       </div>
     </div>
 
-    <!-- REWARDS PAGE -->
+    <!-- REWARDS -->
     <div id="rewards" class="page">
       <h2>🎁 Daily Rewards & Spinner</h2>
       <input type="text" id="username" placeholder="Enter Minecraft Username" class="username-input">
-      
+
       <div class="daily-section">
         <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
         <p id="streak-info">Current Streak: <span id="streak-day">0</span> days</p>
-        <p id="spins-left">Spins Left: <span id="spins-count">0</span></p>
+        <p id="spins-left">Spins Left Today: <span id="spins-count">0</span></p>
+
+        <!-- Temporary test button - remove when done testing -->
+        <button id="testResetBtn" style="margin-top:20px; background:#ff4444; color:white; padding:12px 20px; border:none; border-radius:8px; font-size:1rem; cursor:pointer;">
+          Reset Spinner (Test Only)
+        </button>
       </div>
 
       <div id="spinner-section">
@@ -63,14 +69,14 @@
       <h2>💬 Join Our Discord</h2>
       <p>Get exclusive rewards, announcements & chat with everyone!</p>
       <a href="https://discord.gg/yourserver" target="_blank" class="discord-btn">JOIN DISCORD SERVER</a>
-      <p class="note">Replace the link above with your real Discord invite</p>
+      <p class="note">(replace link with your real invite)</p>
     </div>
 
-    <!-- MR SIKANDAR -->
+    <!-- ABOUT -->
     <div id="mrsikandar" class="page">
       <h2>👑 About MrSikandarYT</h2>
       <p>Official server owner & Minecraft content creator.</p>
-      <a href="https://youtube.com/@MrSikandarYT" target="_blank" class="yt-btn">YouTube Channel</a>
+      <a href="https://youtube.com/@Mr.SikandarOfficalYT" target="_blank" class="yt-btn">YouTube Channel</a>
     </div>
   </main>
 
