@@ -10,46 +10,28 @@ const STORAGE = {
 };
 
 // ──────────────────────────────────────────────
-// YOUR NODE.JS URL (already filled)
+// YOUR NODE.JS BACKEND
 // ──────────────────────────────────────────────
 const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
 const API_KEY = "Sikandar123";
 
-// ──────────────────────────────────────────────
-// SEND REWARD TO NODE.JS
-// ──────────────────────────────────────────────
+// Send reward to Node.js + Discord
 async function sendRewardToBot(username, reward) {
   try {
     const response = await fetch(`${NODEJS_URL}/reward`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username,
-        reward: reward,
-        key: API_KEY
-      })
+      body: JSON.stringify({ username: username, reward: reward, key: API_KEY })
     });
-
     const data = await response.json();
-
-    if (data.success) {
-      console.log(`✅ Reward "${reward}" sent for ${username}`);
-      return true;
-    } else {
-      console.error("Server error:", data.message);
-      alert("Failed to send reward: " + (data.message || "Unknown error"));
-      return false;
-    }
+    if (data.success) console.log(`✅ Reward sent: ${reward} for ${username}`);
+    else console.error("Server error:", data.message);
   } catch (err) {
-    console.error("Cannot connect to server:", err);
-    alert("Cannot connect to reward server.\nMake sure your Node.js Replit is running.");
-    return false;
+    console.error("Cannot connect to reward server", err);
   }
 }
 
-// ──────────────────────────────────────────────
-// WHEEL SETUP (same as before)
-// ──────────────────────────────────────────────
+// Wheel Setup
 const canvas = document.getElementById('wheel');
 const ctx = canvas?.getContext('2d');
 let rotation = 0;
@@ -116,9 +98,7 @@ function drawWheel(rot = 0) {
   ctx.stroke();
 }
 
-// ──────────────────────────────────────────────
-// HELPERS (unchanged)
-// ──────────────────────────────────────────────
+// Helpers
 function getToday() { return new Date().toISOString().split('T')[0]; }
 function isNewDay(last) { return !last || getToday() !== last; }
 
@@ -144,11 +124,8 @@ function getAvailableSpins() {
 function consumeSpin() {
   resetIfNewDay();
   let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)) || 0;
-  if (bonus > 0) {
-    localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
-  } else {
-    localStorage.setItem(STORAGE.lastSpin, getToday());
-  }
+  if (bonus > 0) localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
+  else localStorage.setItem(STORAGE.lastSpin, getToday());
 }
 
 function getPrize() {
@@ -162,11 +139,9 @@ function getPrize() {
   return segments[0];
 }
 
-// ──────────────────────────────────────────────
-// SPIN FUNCTION (now sends to bot)
-// ──────────────────────────────────────────────
+// Spin Function
 async function startSpin() {
-  const username = document.getElementById('username')?.value?.trim();
+  const username = document.getElementById('username').value.trim();
   if (!username) return alert("Enter Minecraft username first!");
 
   const avail = getAvailableSpins();
@@ -176,14 +151,11 @@ async function startSpin() {
   const btn = document.getElementById('spinBtn');
   btn.disabled = true;
   btn.textContent = "SPINNING...";
-  btn.style.background = "#555";
 
   consumeSpin();
   updateSpinsDisplay();
 
   const prize = getPrize();
-
-  // Spin Animation
   const idx = segments.findIndex(s => s.text === prize.text && s.color === prize.color);
   const segAngle = (Math.PI * 2) / segments.length;
   const target = - (idx * segAngle + segAngle / 2) + Math.PI;
@@ -206,11 +178,8 @@ async function startSpin() {
       spinning = false;
       btn.disabled = false;
       btn.textContent = "SPIN NOW";
-      btn.style.background = "#00ff41";
 
       document.getElementById('spin-result').innerHTML = `🎉 YOU GOT: <strong>${prize.text}</strong>!`;
-
-      // Send reward to Discord bot
       sendRewardToBot(username, prize.text);
 
       if (prize.text.includes("Million") || prize.text.includes("Sword")) confettiBurst();
@@ -219,11 +188,9 @@ async function startSpin() {
   animate();
 }
 
-// ──────────────────────────────────────────────
-// DAILY CLAIM (now sends to bot)
-// ──────────────────────────────────────────────
+// Daily Claim
 async function claimDaily() {
-  const username = document.getElementById('username')?.value?.trim();
+  const username = document.getElementById('username').value.trim();
   if (!username) return alert("Enter Minecraft username first!");
 
   resetIfNewDay();
@@ -237,93 +204,67 @@ async function claimDaily() {
   localStorage.setItem(STORAGE.lastClaim, today);
 
   const day = ((streak - 1) % 7) + 1;
-  let msg = "", rewardText = "", addSpins = 0;
+  let rewardText = "", addSpins = 0;
 
-  if (day === 1) { msg = "10k Money"; rewardText = "10k Money"; }
-  else if (day === 2) { msg = "50k Money"; rewardText = "50k Money"; }
-  else if (day === 3) { msg = "Netherite Armour"; rewardText = "Netherite Armour"; }
-  else if (day === 4) { msg = "1 Heart + 100k"; rewardText = "1 Heart + 100k"; }
-  else if (day === 5) { msg = "1 Spin"; addSpins = 1; rewardText = "Daily Bonus Spin"; }
-  else if (day === 6) { msg = "2 Spins"; addSpins = 2; rewardText = "Daily Bonus Spins"; }
-  else if (day === 7) { msg = "1 Million + 2 Spins"; addSpins = 2; rewardText = "1 Million + 2 Spins"; }
+  if (day === 1) rewardText = "10k Money";
+  else if (day === 2) rewardText = "50k Money";
+  else if (day === 3) rewardText = "Netherite Armour";
+  else if (day === 4) rewardText = "1 Heart + 100k";
+  else if (day === 5) { rewardText = "Daily Bonus Spin"; addSpins = 1; }
+  else if (day === 6) { rewardText = "Daily Bonus Spins"; addSpins = 2; }
+  else if (day === 7) { rewardText = "1 Million + 2 Spins"; addSpins = 2; }
 
   if (addSpins > 0) {
     let cur = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)) || 0;
     localStorage.setItem(STORAGE.bonusSpinsToday, cur + addSpins);
   }
 
-  alert(`✅ Day ${streak} Claimed!\n${msg}\nSpins added: ${addSpins}`);
+  alert(`✅ Day ${streak} Claimed!\n${rewardText}\nSpins added: ${addSpins}`);
 
-  // Send to bot
-  if (rewardText) {
-    await sendRewardToBot(username, rewardText);
-  }
+  if (rewardText) await sendRewardToBot(username, rewardText);
 
   updateStreakDisplay();
   updateSpinsDisplay();
 }
 
-// ──────────────────────────────────────────────
-// UI & INIT
-// ──────────────────────────────────────────────
+// UI Functions
 function updateStreakDisplay() {
   document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0;
 }
-
 function updateSpinsDisplay() {
   document.getElementById('spins-count').textContent = getAvailableSpins();
 }
 
-function showPage(id) {
+// Tab System (combined with your original)
+function showTab(name, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const page = document.getElementById(id);
-  if (page) page.classList.add('active');
-}
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
 
-function init() {
-  if (canvas) drawWheel(0);
-
-  document.querySelectorAll('.menu-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const page = btn.getAttribute('data-page');
-      if (page) showPage(page);
-    });
-  });
-
-  document.getElementById('hamburger')?.addEventListener('click', () => {
-    document.getElementById('sidebar')?.classList.toggle('hidden');
-  });
-
-  document.getElementById('spinBtn')?.addEventListener('click', startSpin);
-  document.getElementById('dailyBtn')?.addEventListener('click', claimDaily);
-
-  const unameInput = document.getElementById('username');
-  if (unameInput) {
-    unameInput.value = localStorage.getItem(STORAGE.username) || '';
-    unameInput.addEventListener('input', e => {
-      localStorage.setItem(STORAGE.username, e.target.value.trim());
-    });
+  if (name === 'rewards') {
+    if (canvas) drawWheel(0);
+    updateStreakDisplay();
+    updateSpinsDisplay();
   }
-
-  document.getElementById('testResetBtn')?.addEventListener('click', () => {
-    if (confirm("Reset daily claim & spins for testing?")) {
-      localStorage.removeItem(STORAGE.lastClaim);
-      localStorage.removeItem(STORAGE.lastSpin);
-      localStorage.setItem(STORAGE.bonusSpinsToday, '0');
-      alert("Reset done!");
-      resetIfNewDay();
-      updateStreakDisplay();
-      updateSpinsDisplay();
-    }
-  });
-
-  resetIfNewDay();
-  updateStreakDisplay();
-  updateSpinsDisplay();
-  showPage('home');
 }
 
-window.addEventListener('load', init);
+// Original functions (copy from your old script.js)
+function openDiscord() { window.open('https://discord.gg/yourinvite', '_blank'); }
+function copyIP() {
+  navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
+  showToast('✅ IP Copied!');
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast') || document.createElement('div');
+  t.id = 'toast';
+  t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--surface);border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:"Press Start 2P",monospace;z-index:9999;';
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
 
 // Confetti
 function confettiBurst() {
@@ -336,11 +277,24 @@ function confettiBurst() {
       const anim = setInterval(() => {
         y += 12;
         conf.style.top = y + 'px';
-        if (y > window.innerHeight + 50) {
-          clearInterval(anim);
-          conf.remove();
-        }
+        if (y > window.innerHeight + 50) { clearInterval(anim); conf.remove(); }
       }, 16);
     }, i * 5);
   }
 }
+
+// Init
+window.addEventListener('load', () => {
+  if (canvas) drawWheel(0);
+  document.getElementById('spinBtn').addEventListener('click', startSpin);
+  document.getElementById('dailyBtn').addEventListener('click', claimDaily);
+
+  const uname = document.getElementById('username');
+  if (uname) {
+    uname.value = localStorage.getItem(STORAGE.username) || '';
+    uname.addEventListener('input', e => localStorage.setItem(STORAGE.username, e.target.value.trim()));
+  }
+
+  // For testing
+  // document.getElementById('testResetBtn')?.addEventListener('click', () => { ... });
+});
