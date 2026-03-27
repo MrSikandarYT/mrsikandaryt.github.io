@@ -109,7 +109,7 @@
 <div id="toast"></div>
 
 <script>
-// ==================== SPINNER & REWARDS LOGIC ====================
+// ==================== CONFIG ====================
 const STORAGE = {
   username: 'mcUsername',
   streak: 'dailyStreak',
@@ -121,10 +121,21 @@ const STORAGE = {
 const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
 const API_KEY = "Sikandar123";
 
+// Daily Rewards according to your request
+const dailyRewards = {
+  1: "10k Reward",
+  2: "50k Reward",
+  3: "Netherite kit",
+  4: "1 Heart + 100k Reward",
+  5: "1 Bonus Spin",
+  6: "2 Bonus Spins",
+  7: "1 Million + 2 Spins"
+};
+
+// ==================== SPINNER ====================
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 let isSpinning = false;
-let currentRotation = 0;
 
 const segments = [
   { text: "1 Hit Sword", color: "#ff4444", weight: 10 },
@@ -183,6 +194,73 @@ function getPrize() {
   return segments[0];
 }
 
+// ==================== DAILY REWARD + BROADCAST ====================
+async function claimDaily() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Please enter your Minecraft username!");
+
+  const today = getToday();
+  if (localStorage.getItem(STORAGE.lastClaim) === today) {
+    return alert("You have already claimed today's reward!");
+  }
+
+  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
+  localStorage.setItem(STORAGE.streak, streak);
+  localStorage.setItem(STORAGE.lastClaim, today);
+
+  const day = ((streak - 1) % 7) + 1;
+  const rewardText = dailyRewards[day] || "10k Reward";
+
+  // Add bonus spins if applicable
+  let bonusSpins = 0;
+  if (day === 5) bonusSpins = 1;
+  if (day === 6) bonusSpins = 2;
+  if (day === 7) bonusSpins = 2;
+
+  if (bonusSpins > 0) {
+    let currentBonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+    localStorage.setItem(STORAGE.bonusSpinsToday, currentBonus + bonusSpins);
+  }
+
+  // Send to Discord via Node.js (Daily Reward + Broadcast)
+  await sendRewardToBot(username, rewardText, true);   // true = isDaily
+
+  alert(`✅ Day ${streak} Claimed!\nYou received: ${rewardText}`);
+
+  updateStreakDisplay();
+  updateSpinsDisplay();
+}
+
+// ==================== SEND TO NODE.JS (Fixed for both Daily & Spinner) ====================
+async function sendRewardToBot(username, reward, isDaily = false) {
+  try {
+    const payload = {
+      username: username,
+      reward: reward,
+      key: API_KEY
+    };
+
+    if (isDaily) {
+      payload.isDaily = true;
+      payload.broadcast = `${username} Have Visited`;
+    }
+
+    const response = await fetch(`${NODEJS_URL}/reward`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      console.log("✅ Sent to Discord:", reward);
+    }
+  } catch (err) {
+    console.error("Failed to send reward to bot:", err);
+  }
+}
+
+// ==================== SPINNER (unchanged) ====================
 async function startSpin() {
   if (isSpinning) return;
   const username = document.getElementById('username').value.trim();
@@ -212,7 +290,7 @@ async function startSpin() {
     if (progress > 1) progress = 1;
     const ease = 1 - Math.pow(1 - progress, 3);
 
-    currentRotation = target * ease;
+    const currentRotation = target * ease;
     drawWheel(currentRotation);
 
     if (progress < 1) {
@@ -222,13 +300,13 @@ async function startSpin() {
       btn.disabled = false;
       btn.textContent = "SPIN NOW";
       document.getElementById('spin-result').innerHTML = `🎉 You won: <b>${prize.text}</b>!`;
-      sendRewardToBot(username, prize.text);
+      sendRewardToBot(username, prize.text);   // Spinner reward
     }
   }
   animate();
 }
 
-// Daily & Spin helpers
+// Helper functions
 function getToday() { return new Date().toISOString().split('T')[0]; }
 function isNewDay(last) { return !last || getToday() !== last; }
 
@@ -247,23 +325,6 @@ function consumeSpin() {
   }
 }
 
-async function claimDaily() {
-  const username = document.getElementById('username').value.trim();
-  if (!username) return alert("Enter username first!");
-
-  if (localStorage.getItem(STORAGE.lastClaim) === getToday()) {
-    return alert("You already claimed today!");
-  }
-
-  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
-  localStorage.setItem(STORAGE.streak, streak);
-  localStorage.setItem(STORAGE.lastClaim, getToday());
-
-  alert(`✅ Claimed! Day ${streak} streak!`);
-  updateStreakDisplay();
-  updateSpinsDisplay();
-}
-
 function updateStreakDisplay() {
   document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0;
 }
@@ -271,23 +332,13 @@ function updateSpinsDisplay() {
   document.getElementById('spins-count').textContent = getAvailableSpins();
 }
 
-async function sendRewardToBot(username, reward) {
-  try {
-    await fetch(`${NODEJS_URL}/reward`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, reward, key: API_KEY })
-    });
-  } catch(e) {}
-}
-
-// Tab Switching
+// Tab System
 function showTab(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(page).classList.add('active');
 
   if (page === 'rewards') {
-    drawWheel(currentRotation);
+    drawWheel(0);
     updateStreakDisplay();
     updateSpinsDisplay();
   }
@@ -295,7 +346,7 @@ function showTab(page) {
 
 function copyIP() {
   navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
-  showToast('IP Copied!');
+  showToast('✅ IP Copied!');
 }
 
 function showToast(text) {
@@ -305,24 +356,20 @@ function showToast(text) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// Initialize everything
+// Initialize
 window.addEventListener('load', () => {
   drawWheel(0);
 
-  // Username save
   const unameInput = document.getElementById('username');
   unameInput.value = localStorage.getItem(STORAGE.username) || '';
-  unameInput.addEventListener('input', () => {
-    localStorage.setItem(STORAGE.username, unameInput.value.trim());
-  });
+  unameInput.addEventListener('input', () => localStorage.setItem(STORAGE.username, unameInput.value.trim()));
 
-  // Button listeners
   document.getElementById('spinBtn').addEventListener('click', startSpin);
   document.getElementById('dailyBtn').addEventListener('click', claimDaily);
 
   // Test Reset
   document.getElementById('testResetBtn').addEventListener('click', () => {
-    if (confirm("Reset all daily/spin data?")) {
+    if (confirm("Reset all daily data for testing?")) {
       localStorage.removeItem(STORAGE.lastClaim);
       localStorage.removeItem(STORAGE.lastSpin);
       localStorage.setItem(STORAGE.bonusSpinsToday, "0");
