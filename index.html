@@ -13,141 +13,103 @@
   <style>
     :root {
       --green:#4ade80;--dark-green:#166534;--gold:#fbbf24;--sky:#0ea5e9;
-      --red:#f87171;--dark-red:#991b1b;--stone:#78716c;--purple:#a78bfa;
       --bg:#0f172a;--surface:#1e293b;--surface2:#263048;--border:#334155;
-      --text:#e2e8f0;--muted:#94a3b8;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
+    body{background:var(--bg);color:#e2e8f0;font-family:'Nunito',sans-serif;min-height:100vh;}
     
-    /* NAV */
-    nav{background:var(--surface);border-bottom:3px solid var(--green);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:56px;flex-wrap:wrap;gap:0.5rem;}
-    .nav-logo{font-family:'Press Start 2P',monospace;font-size:.75rem;color:var(--green);text-shadow:2px 2px 0 var(--dark-green);}
-    .nav-links{display:flex;gap:0.1rem;flex-wrap:wrap;}
-    .nav-link{font-family:'VT323',monospace;font-size:1rem;color:var(--muted);padding:.4rem .7rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+    nav{background:var(--surface);border-bottom:3px solid var(--green);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px;}
+    .nav-logo{font-family:'Press Start 2P',monospace;font-size:1rem;color:var(--green);}
+    .nav-links{display:flex;gap:8px;flex-wrap:wrap;}
+    .nav-link{font-family:'VT323',monospace;font-size:1.1rem;color:#94a3b8;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;}
     .nav-link:hover,.nav-link.active{color:var(--green);border-bottom-color:var(--green);}
 
-    .page{display:none;min-height:calc(100vh - 56px);}
+    .page{display:none;}
     .page.active{display:block;}
-    .container{max-width:900px;margin:0 auto;padding:0 1.5rem;}
-    .page-content{padding:2.5rem 0;}
 
-    .hero{text-align:center;padding:3rem 1rem 2rem;}
-    h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.1rem,4.5vw,2rem);color:var(--green);text-shadow:3px 3px 0 var(--dark-green);}
-    .ip-tag{display:inline-block;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.35);color:var(--sky);font-family:'VT323',monospace;font-size:1.1rem;padding:.25rem .8rem;cursor:pointer;}
+    .hero{text-align:center;padding:40px 20px;}
+    h1{font-family:'Press Start 2P',monospace;font-size:2rem;color:var(--green);margin:10px 0;}
+    .ip-tag{background:rgba(14,165,233,0.15);border:1px solid #0ea5e9;color:#0ea5e9;padding:8px 16px;border-radius:4px;cursor:pointer;display:inline-block;margin:10px 0;}
 
-    /* Option Cards */
-    .options-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:2rem 0;}
-    .option-card{background:var(--surface);border:2px solid var(--border);border-top:3px solid var(--green);padding:1.8rem;text-align:center;cursor:pointer;transition:all .2s;}
-    .option-card:hover{transform:translateY(-8px);border-color:var(--green);}
-    .option-card .emoji{font-size:3rem;margin-bottom:1rem;}
-    .option-card .title{font-family:'Press Start 2P',monospace;font-size:.65rem;color:var(--green);}
-    .option-card .desc{font-family:'VT323',monospace;color:var(--muted);font-size:1rem;}
+    .options-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:15px;margin:30px 0;}
+    .option-card{background:var(--surface);border:2px solid var(--border);border-top:4px solid var(--green);padding:20px;text-align:center;cursor:pointer;}
+    .option-card:hover{border-color:var(--green);transform:translateY(-5px);}
+    .option-card .emoji{font-size:2.8rem;margin-bottom:10px;}
 
-    /* Rewards Page */
-    .username-input, .claim-btn, .spin-btn, #testResetBtn {
-      width: 100%; max-width: 420px; padding: 14px; margin: 12px auto; display: block;
-      background: var(--surface2); border: 3px solid var(--green); color: white; 
-      font-family: 'VT323', monospace; font-size: 1.05rem; text-align: center;
+    /* Rewards */
+    .username-input, .claim-btn, .spin-btn {
+      width: 100%; max-width: 400px; padding: 15px; margin: 15px auto; display: block;
+      background: var(--surface2); border: 3px solid var(--green); color: white; font-size: 1.1rem;
     }
-    .claim-btn, .spin-btn { background: var(--green); color: #052e16; font-weight: bold; cursor: pointer; border: none; }
-    .claim-btn:hover, .spin-btn:hover { background: #86efac; transform: translateY(-3px); }
+    .claim-btn, .spin-btn { background: var(--green); color: black; font-weight: bold; cursor: pointer; }
+    .wheel-container { position: relative; width: 320px; max-width: 90%; margin: 30px auto; }
+    #wheel { width: 100%; border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 30px var(--green); }
+    .pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3rem; z-index: 10; }
+    #spin-result { margin-top: 20px; font-size: 1.3rem; color: var(--gold); text-align: center; min-height: 60px; }
 
-    .wheel-container {
-      position: relative; width: 340px; max-width: 90%; margin: 30px auto; text-align: center;
-    }
-    #wheel {
-      width: 100%; height: auto; border: 14px solid var(--green); border-radius: 50%; 
-      box-shadow: 0 0 40px var(--green); background: #000;
-    }
-    .pointer {
-      position: absolute; top: -38px; left: 50%; transform: translateX(-50%);
-      font-size: 3.5rem; color: #fbbf24; z-index: 20; text-shadow: 0 0 10px #000;
-    }
-    #spin-result {
-      margin-top: 25px; font-family: 'Press Start 2P', monospace; font-size: 1.2rem; 
-      color: var(--gold); min-height: 80px; text-align: center;
-    }
-
-    footer{text-align:center;padding:2rem 1rem;font-family:'VT323',monospace;color:var(--muted);border-top:2px solid var(--border);}
-    #toast{position:fixed;bottom:20px;right:20px;background:var(--surface);border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:'Press Start 2P',monospace;z-index:9999;opacity:0;transition:opacity .3s;}
+    #toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:'Press Start 2P',monospace;z-index:9999;opacity:0;transition:opacity 0.3s;}
     #toast.show{opacity:1;}
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-logo">⛏ Mr.Sikandar's Lapata SMP</div>
+  <div class="nav-logo">Mr.Sikandar's Lapata SMP</div>
   <div class="nav-links">
-    <span class="nav-link active" onclick="showTab('home',this)">🏠 Home</span>
-    <span class="nav-link" onclick="showTab('appeal',this)">📝 Appeal</span>
-    <span class="nav-link" onclick="showTab('rules',this)">📜 Rules</span>
-    <span class="nav-link" onclick="showTab('staff',this)">👥 Staff</span>
-    <span class="nav-link" onclick="showTab('rewards',this)">🎁 Rewards</span>
-    <span class="nav-link" onclick="showTab('news',this)">📢 News</span>
-    <span class="nav-link discord" onclick="openDiscord()">💬 Discord</span>
+    <span class="nav-link active" onclick="showTab('home')">🏠 Home</span>
+    <span class="nav-link" onclick="showTab('appeal')">📝 Appeal</span>
+    <span class="nav-link" onclick="showTab('rules')">📜 Rules</span>
+    <span class="nav-link" onclick="showTab('staff')">👥 Staff</span>
+    <span class="nav-link" onclick="showTab('rewards')">🎁 Rewards</span>
   </div>
 </nav>
 
 <!-- HOME -->
-<div class="page active" id="tab-home">
-  <div class="container page-content">
-    <div class="hero">
-      <div class="server-badge">⛏ MINECRAFT SMP</div>
-      <h1>Mr.Sikandar's Lapata SMP</h1>
-      <p class="subtitle">The Ultimate Survival SMP</p>
-      <div class="ip-tag" onclick="copyIP()">📡 fakelapataop.aternos.me:43833</div>
-      <br/><br/>
-      <a class="discord-btn" onclick="openDiscord()">💬 Join Discord</a>
-    </div>
+<div class="page active" id="home">
+  <div class="hero">
+    <h1>Mr.Sikandar's Lapata SMP</h1>
+    <p style="font-family:'VT323',monospace;font-size:1.3rem;color:#94a3b8;">The Ultimate Survival SMP</p>
+    <div class="ip-tag" onclick="copyIP()">fakelapataop.aternos.me:43833</div>
+  </div>
 
-    <div class="options-grid">
-      <div class="option-card" onclick="showTab('appeal')"><div class="emoji">📝</div><div class="title">APPEAL BAN</div><div class="desc">Submit your appeal</div></div>
-      <div class="option-card" onclick="showTab('rules')"><div class="emoji">📜</div><div class="title">SERVER RULES</div><div class="desc">Read before playing</div></div>
-      <div class="option-card" onclick="showTab('staff')"><div class="emoji">👥</div><div class="title">MEET STAFF</div><div class="desc">Our team</div></div>
-      <div class="option-card" onclick="showTab('rewards')"><div class="emoji">🎁</div><div class="title">DAILY REWARDS</div><div class="desc">Spin & Claim</div></div>
-    </div>
-
-    <footer>
-      <p>Mr.Sikandar's Lapata SMP &copy; 2026</p>
-    </footer>
+  <div class="options-grid" style="max-width:900px;margin:0 auto;padding:0 15px;">
+    <div class="option-card" onclick="showTab('appeal')"><div class="emoji">📝</div><div style="font-family:'Press Start 2P';color:var(--green);">APPEAL</div></div>
+    <div class="option-card" onclick="showTab('rules')"><div class="emoji">📜</div><div style="font-family:'Press Start 2P';color:var(--green);">RULES</div></div>
+    <div class="option-card" onclick="showTab('staff')"><div class="emoji">👥</div><div style="font-family:'Press Start 2P';color:var(--green);">STAFF</div></div>
+    <div class="option-card" onclick="showTab('rewards')"><div class="emoji">🎁</div><div style="font-family:'Press Start 2P';color:var(--green);">REWARDS</div></div>
   </div>
 </div>
 
 <!-- REWARDS PAGE -->
-<div class="page" id="tab-rewards">
-  <div class="container page-content">
-    <div class="card" style="background:var(--surface);padding:2rem;">
-      <div class="card-title">🎁 DAILY REWARDS & LUCKY SPINNER</div>
-      
-      <input type="text" id="username" placeholder="Enter Your Minecraft Username" class="username-input">
+<div class="page" id="rewards">
+  <div style="max-width:900px;margin:0 auto;padding:20px;">
+    <h2 style="text-align:center;color:var(--green);margin-bottom:20px;">🎁 Daily Rewards & Spinner</h2>
+    
+    <input type="text" id="username" placeholder="Enter Your Minecraft Username" class="username-input">
 
-      <div style="text-align:center;margin:20px 0;">
-        <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
-        <p>Streak: <span id="streak-day" style="color:var(--gold);font-weight:bold;">0</span> days</p>
-        <p>Spins Left: <span id="spins-count" style="color:var(--green);font-weight:bold;">1</span></p>
-      </div>
-
-      <div class="wheel-container">
-        <div class="pointer">▼</div>
-        <canvas id="wheel" width="340" height="340"></canvas>
-        <button id="spinBtn" class="spin-btn">SPIN NOW</button>
-      </div>
-
-      <p id="spin-result"></p>
-
-      <!-- Test Reset Button -->
-      <button id="testResetBtn" style="background:#991b1b;color:white;padding:10px 20px;margin-top:20px;border:none;border-radius:4px;cursor:pointer;">
-        🔄 Test Reset (Clear Daily Data)
-      </button>
+    <div style="text-align:center;margin:20px 0;">
+      <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
+      <p>Streak: <span id="streak-day">0</span> days | Spins Left: <span id="spins-count">1</span></p>
     </div>
+
+    <div class="wheel-container">
+      <div class="pointer">▼</div>
+      <canvas id="wheel" width="320" height="320"></canvas>
+      <button id="spinBtn" class="spin-btn">SPIN NOW</button>
+    </div>
+
+    <p id="spin-result"></p>
+
+    <button id="testResetBtn" style="background:#991b1b;color:white;padding:10px 20px;margin:20px auto;display:block;border:none;border-radius:4px;cursor:pointer;">
+      Test Reset (for testing only)
+    </button>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// ==================== IMPROVED SPINNER ====================
+// ==================== SPINNER & REWARDS LOGIC ====================
 const STORAGE = {
   username: 'mcUsername',
   streak: 'dailyStreak',
@@ -162,12 +124,218 @@ const API_KEY = "Sikandar123";
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 let isSpinning = false;
+let currentRotation = 0;
 
 const segments = [
-  { text: "1 Hit Sword (1 use)",   color: "#ff4444", weight: 8 },
-  { text: "Try Again",            color: "#555555", weight: 25 },
-  { text: "500k Money",           color: "#44ff44", weight: 20 },
-  { text: "Try Again",            color: "#555555", weight: 15 },
-  { text: "5 Million!",           color: "#ffdd00", weight: 7 },
-  { text: "Try Again",            color: "#555555", weight: 15 },
-  { text: "100k Money",           color: "#44ff44
+  { text: "1 Hit Sword", color: "#ff4444", weight: 10 },
+  { text: "Try Again", color: "#555555", weight: 25 },
+  { text: "500k Money", color: "#44ff44", weight: 20 },
+  { text: "Try Again", color: "#555555", weight: 15 },
+  { text: "5 Million!", color: "#ffdd00", weight: 8 },
+  { text: "Try Again", color: "#555555", weight: 12 },
+  { text: "100k Money", color: "#44ff44", weight: 20 },
+  { text: "Netherite Set", color: "#aa66ff", weight: 10 }
+];
+
+function drawWheel(rot = 0) {
+  ctx.clearRect(0, 0, 320, 320);
+  const cx = 160, cy = 160, radius = 140;
+  const step = (Math.PI * 2) / segments.length;
+
+  for (let i = 0; i < segments.length; i++) {
+    const start = i * step + rot;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, start + step);
+    ctx.closePath();
+    ctx.fillStyle = segments[i].color;
+    ctx.fill();
+    ctx.strokeStyle = "#111"; ctx.lineWidth = 5; ctx.stroke();
+
+    const mid = start + step / 2;
+    const tx = cx + Math.cos(mid) * 95;
+    const ty = cy + Math.sin(mid) * 95;
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(mid + Math.PI/2);
+    ctx.font = "bold 11px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(segments[i].text, 0, 0);
+    ctx.restore();
+  }
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius + 15, 0, Math.PI*2);
+  ctx.strokeStyle = "#00ff41";
+  ctx.lineWidth = 18;
+  ctx.stroke();
+}
+
+function getPrize() {
+  let total = segments.reduce((a, b) => a + b.weight, 0);
+  let r = Math.random() * total;
+  let sum = 0;
+  for (let seg of segments) {
+    sum += seg.weight;
+    if (r <= sum) return seg;
+  }
+  return segments[0];
+}
+
+async function startSpin() {
+  if (isSpinning) return;
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Please enter your Minecraft username!");
+
+  if (getAvailableSpins() <= 0) return alert("No spins left today!");
+
+  isSpinning = true;
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = "SPINNING...";
+
+  consumeSpin();
+  updateSpinsDisplay();
+
+  const prize = getPrize();
+  const spins = 8 + Math.random() * 4;
+  const targetIndex = segments.indexOf(prize);
+  const segmentAngle = (Math.PI * 2) / segments.length;
+  const target = spins * Math.PI * 2 - (targetIndex * segmentAngle) - (segmentAngle / 2);
+
+  let startTime = Date.now();
+  const duration = 6000;
+
+  function animate() {
+    let progress = (Date.now() - startTime) / duration;
+    if (progress > 1) progress = 1;
+    const ease = 1 - Math.pow(1 - progress, 3);
+
+    currentRotation = target * ease;
+    drawWheel(currentRotation);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      isSpinning = false;
+      btn.disabled = false;
+      btn.textContent = "SPIN NOW";
+      document.getElementById('spin-result').innerHTML = `🎉 You won: <b>${prize.text}</b>!`;
+      sendRewardToBot(username, prize.text);
+    }
+  }
+  animate();
+}
+
+// Daily & Spin helpers
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function isNewDay(last) { return !last || getToday() !== last; }
+
+function getAvailableSpins() {
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+  let lastSpin = localStorage.getItem(STORAGE.lastSpin);
+  return bonus + (isNewDay(lastSpin) ? 1 : 0);
+}
+
+function consumeSpin() {
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+  if (bonus > 0) {
+    localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
+  } else {
+    localStorage.setItem(STORAGE.lastSpin, getToday());
+  }
+}
+
+async function claimDaily() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Enter username first!");
+
+  if (localStorage.getItem(STORAGE.lastClaim) === getToday()) {
+    return alert("You already claimed today!");
+  }
+
+  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
+  localStorage.setItem(STORAGE.streak, streak);
+  localStorage.setItem(STORAGE.lastClaim, getToday());
+
+  alert(`✅ Claimed! Day ${streak} streak!`);
+  updateStreakDisplay();
+  updateSpinsDisplay();
+}
+
+function updateStreakDisplay() {
+  document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0;
+}
+function updateSpinsDisplay() {
+  document.getElementById('spins-count').textContent = getAvailableSpins();
+}
+
+async function sendRewardToBot(username, reward) {
+  try {
+    await fetch(`${NODEJS_URL}/reward`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, reward, key: API_KEY })
+    });
+  } catch(e) {}
+}
+
+// Tab Switching
+function showTab(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+
+  if (page === 'rewards') {
+    drawWheel(currentRotation);
+    updateStreakDisplay();
+    updateSpinsDisplay();
+  }
+}
+
+function copyIP() {
+  navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
+  showToast('IP Copied!');
+}
+
+function showToast(text) {
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Initialize everything
+window.addEventListener('load', () => {
+  drawWheel(0);
+
+  // Username save
+  const unameInput = document.getElementById('username');
+  unameInput.value = localStorage.getItem(STORAGE.username) || '';
+  unameInput.addEventListener('input', () => {
+    localStorage.setItem(STORAGE.username, unameInput.value.trim());
+  });
+
+  // Button listeners
+  document.getElementById('spinBtn').addEventListener('click', startSpin);
+  document.getElementById('dailyBtn').addEventListener('click', claimDaily);
+
+  // Test Reset
+  document.getElementById('testResetBtn').addEventListener('click', () => {
+    if (confirm("Reset all daily/spin data?")) {
+      localStorage.removeItem(STORAGE.lastClaim);
+      localStorage.removeItem(STORAGE.lastSpin);
+      localStorage.setItem(STORAGE.bonusSpinsToday, "0");
+      localStorage.setItem(STORAGE.streak, "0");
+      alert("Reset done!");
+      updateStreakDisplay();
+      updateSpinsDisplay();
+    }
+  });
+
+  updateStreakDisplay();
+  updateSpinsDisplay();
+});
+</script>
+</body>
+</html>
