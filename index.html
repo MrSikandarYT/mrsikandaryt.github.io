@@ -42,6 +42,23 @@
       background: var(--surface2); border: 3px solid var(--green); color: white; font-size: 1.1rem;
     }
     .claim-btn, .spin-btn { background: var(--green); color: black; font-weight: bold; cursor: pointer; }
+
+    .reset-all-btn {
+      background: #991b1b;
+      color: white;
+      padding: 12px 24px;
+      margin: 30px auto;
+      display: block;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1rem;
+    }
+    .reset-all-btn:hover {
+      background: #b91c1c;
+    }
+
     .wheel-container { position: relative; width: 320px; max-width: 90%; margin: 30px auto; }
     #wheel { width: 100%; border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 30px var(--green); }
     .pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3rem; z-index: 10; }
@@ -100,8 +117,9 @@
 
     <p id="spin-result"></p>
 
-    <button id="testResetBtn" style="background:#991b1b;color:white;padding:10px 20px;margin:20px auto;display:block;border:none;border-radius:4px;cursor:pointer;">
-      Test Reset (for testing only)
+    <!-- New Reset All Button -->
+    <button id="resetAllBtn" class="reset-all-btn">
+      🔄 RESET ALL PLAYER DATA
     </button>
   </div>
 </div>
@@ -109,13 +127,13 @@
 <div id="toast"></div>
 
 <script>
-// ==================== SPINNER (1 Hit Sword is now SUPER RARE) ====================
+// ==================== SPINNER ====================
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 let isSpinning = false;
 
 const segments = [
-  { text: "1 Hit Sword",     color: "#ff4444", weight: 1 },     // ← Super rare (once a week or less)
+  { text: "1 Hit Sword",     color: "#ff4444", weight: 1 },
   { text: "Try Again",       color: "#555555", weight: 28 },
   { text: "500k Money",      color: "#44ff44", weight: 20 },
   { text: "Try Again",       color: "#555555", weight: 15 },
@@ -171,57 +189,7 @@ function getPrize() {
   return segments[0];
 }
 
-async function startSpin() {
-  if (isSpinning) return;
-  const username = document.getElementById('username').value.trim();
-  if (!username) return alert("Please enter your Minecraft username!");
-
-  if (getAvailableSpins() <= 0) return alert("No spins left today!");
-
-  isSpinning = true;
-  const btn = document.getElementById('spinBtn');
-  btn.disabled = true;
-  btn.textContent = "SPINNING...";
-
-  consumeSpin();
-  updateSpinsDisplay();
-
-  const prize = getPrize();
-
-  const fullSpins = 8 + Math.random() * 3;
-  const segmentIndex = segments.indexOf(prize);
-  const segmentAngle = (Math.PI * 2) / segments.length;
-  const targetRotation = fullSpins * Math.PI * 2 - (segmentIndex * segmentAngle) - (segmentAngle * 0.5);
-
-  const duration = 6200;
-  const startTime = Date.now();
-
-  function animate() {
-    const elapsed = Date.now() - startTime;
-    let progress = elapsed / duration;
-    if (progress > 1) progress = 1;
-
-    const ease = 1 - Math.pow(1 - progress, 4);
-    const currentRot = targetRotation * ease;
-
-    drawWheel(currentRot);
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      isSpinning = false;
-      btn.disabled = false;
-      btn.textContent = "SPIN NOW";
-      document.getElementById('spin-result').innerHTML = `🎉 YOU WON: <strong>${prize.text}</strong>!`;
-      
-      sendRewardToBot(username, prize.text);
-    }
-  }
-
-  animate();
-}
-
-// ==================== DAILY REWARD (unchanged) ====================
+// ==================== DAILY REWARD + RESET ====================
 const STORAGE = { username: 'mcUsername', streak: 'dailyStreak', lastClaim: 'lastDailyClaim', lastSpin: 'lastSpinDate', bonusSpinsToday: 'bonusSpinsToday' };
 const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
 const API_KEY = "Sikandar123";
@@ -279,6 +247,22 @@ async function sendRewardToBot(username, reward, isDaily = false) {
   } catch(e) {}
 }
 
+// Reset All Data Function
+function resetAllData() {
+  if (!confirm("⚠️ WARNING!\n\nThis will RESET ALL player data for everyone who visited this site.\n\nStreak, spins, last claim dates — everything will be deleted.\n\nAre you sure?")) {
+    return;
+  }
+
+  localStorage.clear();   // Clears everything
+
+  alert("✅ ALL PLAYER DATA HAS BEEN RESET SUCCESSFULLY!\n\nEveryone can now claim daily reward and spin again.");
+  
+  // Refresh displays
+  updateStreakDisplay();
+  updateSpinsDisplay();
+  document.getElementById('username').value = '';
+}
+
 // Helpers
 function getToday() { return new Date().toISOString().split('T')[0]; }
 function getAvailableSpins() {
@@ -323,18 +307,9 @@ window.addEventListener('load', () => {
 
   document.getElementById('spinBtn').addEventListener('click', startSpin);
   document.getElementById('dailyBtn').addEventListener('click', claimDaily);
-
-  document.getElementById('testResetBtn').addEventListener('click', () => {
-    if (confirm("Reset daily data?")) {
-      localStorage.removeItem(STORAGE.lastClaim);
-      localStorage.removeItem(STORAGE.lastSpin);
-      localStorage.setItem(STORAGE.bonusSpinsToday, "0");
-      localStorage.setItem(STORAGE.streak, "0");
-      alert("Reset done!");
-      updateStreakDisplay();
-      updateSpinsDisplay();
-    }
-  });
+  
+  // New Reset Button
+  document.getElementById('resetAllBtn').addEventListener('click', resetAllData);
 
   updateStreakDisplay();
   updateSpinsDisplay();
