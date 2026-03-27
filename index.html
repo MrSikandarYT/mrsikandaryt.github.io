@@ -45,7 +45,7 @@
     .wheel-container { position: relative; width: 320px; max-width: 90%; margin: 30px auto; }
     #wheel { width: 100%; border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 30px var(--green); }
     .pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3rem; z-index: 10; }
-    #spin-result { margin-top: 20px; font-size: 1.3rem; color: var(--gold); text-align: center; min-height: 60px; }
+    #spin-result { margin-top: 20px; font-size: 1.3rem; color: var(--gold); text-align: center; min-height: 70px; font-weight: bold; }
 
     #toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:2px solid var(--green);color:var(--green);padding:12px 20px;font-family:'Press Start 2P',monospace;z-index:9999;opacity:0;transition:opacity 0.3s;}
     #toast.show{opacity:1;}
@@ -80,7 +80,7 @@
   </div>
 </div>
 
-<!-- REWARDS PAGE -->
+<!-- REWARDS -->
 <div class="page" id="rewards">
   <div style="max-width:900px;margin:0 auto;padding:20px;">
     <h2 style="text-align:center;color:var(--green);margin-bottom:20px;">🎁 Daily Rewards & Spinner</h2>
@@ -109,158 +109,68 @@
 <div id="toast"></div>
 
 <script>
-// ==================== CONFIG ====================
-const STORAGE = {
-  username: 'mcUsername',
-  streak: 'dailyStreak',
-  lastClaim: 'lastDailyClaim',
-  lastSpin: 'lastSpinDate',
-  bonusSpinsToday: 'bonusSpinsToday'
-};
-
-const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
-const API_KEY = "Sikandar123";
-
-// Daily Rewards according to your request
-const dailyRewards = {
-  1: "10k Reward",
-  2: "50k Reward",
-  3: "Netherite kit",
-  4: "1 Heart + 100k Reward",
-  5: "1 Bonus Spin",
-  6: "2 Bonus Spins",
-  7: "1 Million + 2 Spins"
-};
-
-// ==================== SPINNER ====================
+// ==================== SPINNER (1 Hit Sword is now SUPER RARE) ====================
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 let isSpinning = false;
 
 const segments = [
-  { text: "1 Hit Sword", color: "#ff4444", weight: 10 },
-  { text: "Try Again", color: "#555555", weight: 25 },
-  { text: "500k Money", color: "#44ff44", weight: 20 },
-  { text: "Try Again", color: "#555555", weight: 15 },
-  { text: "5 Million!", color: "#ffdd00", weight: 8 },
-  { text: "Try Again", color: "#555555", weight: 12 },
-  { text: "100k Money", color: "#44ff44", weight: 20 },
-  { text: "Netherite Set", color: "#aa66ff", weight: 10 }
+  { text: "1 Hit Sword",     color: "#ff4444", weight: 1 },     // ← Super rare (once a week or less)
+  { text: "Try Again",       color: "#555555", weight: 28 },
+  { text: "500k Money",      color: "#44ff44", weight: 20 },
+  { text: "Try Again",       color: "#555555", weight: 15 },
+  { text: "5 Million!",      color: "#ffdd00", weight: 8 },
+  { text: "Try Again",       color: "#555555", weight: 12 },
+  { text: "100k Money",      color: "#44ff44", weight: 20 },
+  { text: "Netherite Set",   color: "#aa66ff", weight: 10 }
 ];
 
-function drawWheel(rot = 0) {
+function drawWheel(rotation = 0) {
   ctx.clearRect(0, 0, 320, 320);
   const cx = 160, cy = 160, radius = 140;
   const step = (Math.PI * 2) / segments.length;
 
   for (let i = 0; i < segments.length; i++) {
-    const start = i * step + rot;
+    const start = i * step + rotation;
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, radius, start, start + step);
     ctx.closePath();
     ctx.fillStyle = segments[i].color;
     ctx.fill();
-    ctx.strokeStyle = "#111"; ctx.lineWidth = 5; ctx.stroke();
+    ctx.strokeStyle = "#111"; ctx.lineWidth = 6; ctx.stroke();
 
     const mid = start + step / 2;
-    const tx = cx + Math.cos(mid) * 95;
-    const ty = cy + Math.sin(mid) * 95;
+    const tx = cx + Math.cos(mid) * 92;
+    const ty = cy + Math.sin(mid) * 92;
     ctx.save();
     ctx.translate(tx, ty);
-    ctx.rotate(mid + Math.PI/2);
-    ctx.font = "bold 11px Arial";
-    ctx.fillStyle = "white";
+    ctx.rotate(mid + Math.PI / 2);
+    ctx.font = "bold 10.5px Arial";
+    ctx.fillStyle = "#fff";
     ctx.textAlign = "center";
     ctx.fillText(segments[i].text, 0, 0);
     ctx.restore();
   }
 
   ctx.beginPath();
-  ctx.arc(cx, cy, radius + 15, 0, Math.PI*2);
+  ctx.arc(cx, cy, radius + 16, 0, Math.PI * 2);
   ctx.strokeStyle = "#00ff41";
   ctx.lineWidth = 18;
   ctx.stroke();
 }
 
 function getPrize() {
-  let total = segments.reduce((a, b) => a + b.weight, 0);
-  let r = Math.random() * total;
+  let total = segments.reduce((sum, s) => sum + s.weight, 0);
+  let rand = Math.random() * total;
   let sum = 0;
   for (let seg of segments) {
     sum += seg.weight;
-    if (r <= sum) return seg;
+    if (rand <= sum) return seg;
   }
   return segments[0];
 }
 
-// ==================== DAILY REWARD + BROADCAST ====================
-async function claimDaily() {
-  const username = document.getElementById('username').value.trim();
-  if (!username) return alert("Please enter your Minecraft username!");
-
-  const today = getToday();
-  if (localStorage.getItem(STORAGE.lastClaim) === today) {
-    return alert("You have already claimed today's reward!");
-  }
-
-  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
-  localStorage.setItem(STORAGE.streak, streak);
-  localStorage.setItem(STORAGE.lastClaim, today);
-
-  const day = ((streak - 1) % 7) + 1;
-  const rewardText = dailyRewards[day] || "10k Reward";
-
-  // Add bonus spins if applicable
-  let bonusSpins = 0;
-  if (day === 5) bonusSpins = 1;
-  if (day === 6) bonusSpins = 2;
-  if (day === 7) bonusSpins = 2;
-
-  if (bonusSpins > 0) {
-    let currentBonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
-    localStorage.setItem(STORAGE.bonusSpinsToday, currentBonus + bonusSpins);
-  }
-
-  // Send to Discord via Node.js (Daily Reward + Broadcast)
-  await sendRewardToBot(username, rewardText, true);   // true = isDaily
-
-  alert(`✅ Day ${streak} Claimed!\nYou received: ${rewardText}`);
-
-  updateStreakDisplay();
-  updateSpinsDisplay();
-}
-
-// ==================== SEND TO NODE.JS (Fixed for both Daily & Spinner) ====================
-async function sendRewardToBot(username, reward, isDaily = false) {
-  try {
-    const payload = {
-      username: username,
-      reward: reward,
-      key: API_KEY
-    };
-
-    if (isDaily) {
-      payload.isDaily = true;
-      payload.broadcast = `${username} Have Visited`;
-    }
-
-    const response = await fetch(`${NODEJS_URL}/reward`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await response.json();
-    if (data.success) {
-      console.log("✅ Sent to Discord:", reward);
-    }
-  } catch (err) {
-    console.error("Failed to send reward to bot:", err);
-  }
-}
-
-// ==================== SPINNER (unchanged) ====================
 async function startSpin() {
   if (isSpinning) return;
   const username = document.getElementById('username').value.trim();
@@ -277,21 +187,24 @@ async function startSpin() {
   updateSpinsDisplay();
 
   const prize = getPrize();
-  const spins = 8 + Math.random() * 4;
-  const targetIndex = segments.indexOf(prize);
-  const segmentAngle = (Math.PI * 2) / segments.length;
-  const target = spins * Math.PI * 2 - (targetIndex * segmentAngle) - (segmentAngle / 2);
 
-  let startTime = Date.now();
-  const duration = 6000;
+  const fullSpins = 8 + Math.random() * 3;
+  const segmentIndex = segments.indexOf(prize);
+  const segmentAngle = (Math.PI * 2) / segments.length;
+  const targetRotation = fullSpins * Math.PI * 2 - (segmentIndex * segmentAngle) - (segmentAngle * 0.5);
+
+  const duration = 6200;
+  const startTime = Date.now();
 
   function animate() {
-    let progress = (Date.now() - startTime) / duration;
+    const elapsed = Date.now() - startTime;
+    let progress = elapsed / duration;
     if (progress > 1) progress = 1;
-    const ease = 1 - Math.pow(1 - progress, 3);
 
-    const currentRotation = target * ease;
-    drawWheel(currentRotation);
+    const ease = 1 - Math.pow(1 - progress, 4);
+    const currentRot = targetRotation * ease;
+
+    drawWheel(currentRot);
 
     if (progress < 1) {
       requestAnimationFrame(animate);
@@ -299,44 +212,90 @@ async function startSpin() {
       isSpinning = false;
       btn.disabled = false;
       btn.textContent = "SPIN NOW";
-      document.getElementById('spin-result').innerHTML = `🎉 You won: <b>${prize.text}</b>!`;
-      sendRewardToBot(username, prize.text);   // Spinner reward
+      document.getElementById('spin-result').innerHTML = `🎉 YOU WON: <strong>${prize.text}</strong>!`;
+      
+      sendRewardToBot(username, prize.text);
     }
   }
+
   animate();
 }
 
-// Helper functions
-function getToday() { return new Date().toISOString().split('T')[0]; }
-function isNewDay(last) { return !last || getToday() !== last; }
+// ==================== DAILY REWARD (unchanged) ====================
+const STORAGE = { username: 'mcUsername', streak: 'dailyStreak', lastClaim: 'lastDailyClaim', lastSpin: 'lastSpinDate', bonusSpinsToday: 'bonusSpinsToday' };
+const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
+const API_KEY = "Sikandar123";
 
+const dailyRewards = {
+  1: "10k Reward",
+  2: "50k Reward",
+  3: "Netherite kit",
+  4: "1 Heart + 100k Reward",
+  5: "1 Bonus Spin",
+  6: "2 Bonus Spins",
+  7: "1 Million + 2 Spins"
+};
+
+async function claimDaily() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Please enter your Minecraft username!");
+
+  const today = getToday();
+  if (localStorage.getItem(STORAGE.lastClaim) === today) return alert("You already claimed today!");
+
+  let streak = parseInt(localStorage.getItem(STORAGE.streak) || 0) + 1;
+  localStorage.setItem(STORAGE.streak, streak);
+  localStorage.setItem(STORAGE.lastClaim, today);
+
+  const day = ((streak - 1) % 7) + 1;
+  const rewardText = dailyRewards[day];
+
+  let bonus = 0;
+  if (day === 5) bonus = 1;
+  if (day === 6) bonus = 2;
+  if (day === 7) bonus = 2;
+
+  if (bonus > 0) {
+    let cur = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
+    localStorage.setItem(STORAGE.bonusSpinsToday, cur + bonus);
+  }
+
+  await sendRewardToBot(username, rewardText, true);
+
+  alert(`✅ Day ${streak} Claimed!\nYou received: ${rewardText}`);
+  updateStreakDisplay();
+  updateSpinsDisplay();
+}
+
+async function sendRewardToBot(username, reward, isDaily = false) {
+  try {
+    const body = { username, reward, key: API_KEY };
+    if (isDaily) body.broadcast = `${username} Have Visited`;
+    await fetch(`${NODEJS_URL}/reward`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+  } catch(e) {}
+}
+
+// Helpers
+function getToday() { return new Date().toISOString().split('T')[0]; }
 function getAvailableSpins() {
   let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
-  let lastSpin = localStorage.getItem(STORAGE.lastSpin);
-  return bonus + (isNewDay(lastSpin) ? 1 : 0);
+  return bonus + (localStorage.getItem(STORAGE.lastSpin) !== getToday() ? 1 : 0);
 }
-
 function consumeSpin() {
   let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday) || 0);
-  if (bonus > 0) {
-    localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
-  } else {
-    localStorage.setItem(STORAGE.lastSpin, getToday());
-  }
+  if (bonus > 0) localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
+  else localStorage.setItem(STORAGE.lastSpin, getToday());
 }
+function updateStreakDisplay() { document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0; }
+function updateSpinsDisplay() { document.getElementById('spins-count').textContent = getAvailableSpins(); }
 
-function updateStreakDisplay() {
-  document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0;
-}
-function updateSpinsDisplay() {
-  document.getElementById('spins-count').textContent = getAvailableSpins();
-}
-
-// Tab System
 function showTab(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(page).classList.add('active');
-
   if (page === 'rewards') {
     drawWheel(0);
     updateStreakDisplay();
@@ -348,28 +307,25 @@ function copyIP() {
   navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
   showToast('✅ IP Copied!');
 }
-
-function showToast(text) {
-  const toast = document.getElementById('toast');
-  toast.textContent = text;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Initialize
+// Init
 window.addEventListener('load', () => {
   drawWheel(0);
 
-  const unameInput = document.getElementById('username');
-  unameInput.value = localStorage.getItem(STORAGE.username) || '';
-  unameInput.addEventListener('input', () => localStorage.setItem(STORAGE.username, unameInput.value.trim()));
+  const uname = document.getElementById('username');
+  uname.value = localStorage.getItem(STORAGE.username) || '';
+  uname.addEventListener('input', () => localStorage.setItem(STORAGE.username, uname.value.trim()));
 
   document.getElementById('spinBtn').addEventListener('click', startSpin);
   document.getElementById('dailyBtn').addEventListener('click', claimDaily);
 
-  // Test Reset
   document.getElementById('testResetBtn').addEventListener('click', () => {
-    if (confirm("Reset all daily data for testing?")) {
+    if (confirm("Reset daily data?")) {
       localStorage.removeItem(STORAGE.lastClaim);
       localStorage.removeItem(STORAGE.lastSpin);
       localStorage.setItem(STORAGE.bonusSpinsToday, "0");
