@@ -1,85 +1,433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Monetag code - keep it exactly as is -->
+  <!-- Monetag Code -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="222132" async data-cfasync="false"></script>
-  <meta charset="UTF-8">
   <meta name="monetag" content="0f6c950c986b798d6df9bf08d49fbcf8">
-  <title>Minecraft Rewards</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mr.Sikandar's Lapata SMP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
+  
+  <style>
+    :root {
+      --green:#4ade80;--dark-green:#166534;--gold:#fbbf24;--sky:#0ea5e9;
+      --red:#f87171;--dark-red:#991b1b;--stone:#78716c;--purple:#a78bfa;
+      --bg:#0f172a;--surface:#1e293b;--surface2:#263048;--border:#334155;
+      --text:#e2e8f0;--muted:#94a3b8;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 30%,rgba(14,165,233,.07) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(74,222,128,.05) 0%,transparent 50%);pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(51,65,85,.12) 31px,rgba(51,65,85,.12) 32px),repeating-linear-gradient(90deg,transparent,transparent 31px,rgba(51,65,85,.12) 31px,rgba(51,65,85,.12) 32px);pointer-events:none;z-index:0;}
+
+    /* NAV */
+    nav{background:var(--surface);border-bottom:3px solid var(--green);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:56px;flex-wrap:wrap;gap:0.5rem;}
+    .nav-logo{font-family:'Press Start 2P',monospace;font-size:.75rem;color:var(--green);text-shadow:2px 2px 0 var(--dark-green);white-space:nowrap;}
+    .nav-links{display:flex;gap:0.1rem;flex-wrap:wrap;}
+    .nav-link{font-family:'VT323',monospace;font-size:1rem;color:var(--muted);padding:.4rem .7rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+    .nav-link:hover,.nav-link.active{color:var(--green);border-bottom-color:var(--green);}
+    .nav-link.discord{color:var(--purple);}
+    .nav-link.discord:hover{border-bottom-color:var(--purple);}
+
+    .page{display:none;position:relative;z-index:1;min-height:calc(100vh - 56px);}
+    .page.active{display:block;}
+    .container{max-width:900px;margin:0 auto;padding:0 1.5rem;}
+    .page-content{padding:2.5rem 0;}
+
+    /* HERO */
+    .hero{text-align:center;padding:3rem 1rem 2rem;}
+    .server-badge{display:inline-block;background:var(--surface);border:2px solid var(--green);color:var(--green);font-family:'Press Start 2P',monospace;font-size:.5rem;padding:.35rem .75rem;margin-bottom:1.2rem;}
+    h1{font-family:'Press Start 2P',monospace;font-size:clamp(1rem,4vw,1.8rem);line-height:1.65;color:var(--green);text-shadow:0 0 20px rgba(74,222,128,.4),3px 3px 0 var(--dark-green);margin-bottom:.7rem;}
+    .subtitle{font-family:'VT323',monospace;font-size:1.3rem;color:var(--muted);margin-bottom:.5rem;}
+    .ip-tag{display:inline-block;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.35);color:var(--sky);font-family:'VT323',monospace;font-size:1.1rem;padding:.25rem .8rem;cursor:pointer;transition:background .2s;margin-bottom:1rem;}
+    .ip-tag:hover{background:rgba(14,165,233,.2);}
+
+    .discord-btn{display:inline-flex;align-items:center;gap:.5rem;background:#5865F2;color:#fff;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:.7rem 1.2rem;border:none;cursor:pointer;box-shadow:0 4px 0 #3b4acf;transition:all .15s;text-decoration:none;margin:.5rem auto;border-radius:0;}
+    .discord-btn:hover{background:#4752c4;transform:translateY(-2px);box-shadow:0 6px 0 #3b4acf;}
+
+    /* OPTION CARDS */
+    .options-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+    .option-card{background:var(--surface);border:2px solid var(--border);border-top:3px solid var(--green);padding:1.8rem;text-align:center;cursor:pointer;transition:all .2s;}
+    .option-card:hover{transform:translateY(-5px);border-color:var(--green);box-shadow:0 0 15px rgba(74,222,128,.3);}
+    .option-card .emoji{font-size:2.8rem;margin-bottom:1rem;}
+    .option-card .title{font-family:'Press Start 2P',monospace;font-size:.65rem;color:var(--green);margin-bottom:.5rem;}
+    .option-card .desc{font-family:'VT323',monospace;font-size:.95rem;color:var(--muted);}
+
+    /* REWARDS PAGE */
+    .username-input, .claim-btn, .spin-btn {
+      width: 100%; max-width: 420px; padding: 14px; margin: 15px auto; display: block;
+      background: var(--surface2); border: 3px solid var(--green); color: white; 
+      font-family: 'VT323', monospace; font-size: 1.1rem; text-align: center;
+    }
+    .claim-btn, .spin-btn {
+      background: var(--green); color: #052e16; font-weight: bold; cursor: pointer; border: none;
+    }
+    .claim-btn:hover, .spin-btn:hover { background: #86efac; transform: translateY(-2px); }
+    .wheel-container { position: relative; width: 340px; margin: 40px auto; text-align: center; }
+    #wheel { border: 12px solid var(--green); border-radius: 50%; box-shadow: 0 0 40px var(--green); }
+    .pointer { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); font-size: 4rem; z-index: 10; color: #fbbf24; }
+    #spin-result { margin-top: 20px; font-family: 'Press Start 2P', monospace; font-size: 1.1rem; color: var(--gold); min-height: 70px; text-align: center; }
+
+    /* Other styles */
+    .rules-box{background:rgba(251,191,36,.05);border:2px solid rgba(251,191,36,.22);padding:1.2rem 1.5rem;margin-bottom:1.5rem;}
+    .rules-box h3{font-family:'Press Start 2P',monospace;font-size:.58rem;color:var(--gold);margin-bottom:.8rem;}
+    .rules-box ul{list-style:none;}
+    .rules-box li{font-family:'VT323',monospace;font-size:1.05rem;color:var(--muted);padding:.2rem 0;display:flex;gap:.5rem;}
+    .rules-box li::before{content:'▸';color:var(--gold);flex-shrink:0;}
+    .form-row{margin-bottom:1.15rem;}
+    label{display:block;font-family:'VT323',monospace;font-size:1rem;color:var(--green);margin-bottom:.3rem;}
+    input,select,textarea{width:100%;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;padding:.6rem .9rem;outline:none;transition:border-color .2s,box-shadow .2s;resize:vertical;}
+    input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.1);}
+    .btn-submit{display:block;width:100%;background:var(--green);color:#052e16;border:none;font-family:'Press Start 2P',monospace;font-size:.68rem;padding:.95rem;cursor:pointer;box-shadow:0 4px 0 var(--dark-green);transition:all .15s;margin-top:1.3rem;}
+    .btn-submit:hover{background:#86efac;transform:translateY(-2px);box-shadow:0 6px 0 var(--dark-green);}
+    .staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+    footer{text-align:center;padding:2rem 1rem;font-family:'VT323',monospace;font-size:.95rem;color:var(--muted);border-top:2px solid var(--border);margin-top:2rem;}
+    #toast{position:fixed;bottom:2rem;right:2rem;background:var(--surface);border:2px solid var(--green);color:var(--green);font-family:'Press Start 2P',monospace;font-size:.5rem;padding:.7rem 1.1rem;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;line-height:1.8;}
+    #toast.show{opacity:1;}
+  </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">🟩 Minecraft Rewards</div>
-    <button id="hamburger" class="hamburger">☰</button>
-  </header>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⛏ Mr.Sikandar's Lapata SMP</div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showTab('home',this)">🏠 Home</span>
+    <span class="nav-link" onclick="showTab('appeal',this)">📝 Appeal</span>
+    <span class="nav-link" onclick="showTab('rules',this)">📜 Rules</span>
+    <span class="nav-link" onclick="showTab('staff',this)">👥 Staff</span>
+    <span class="nav-link" onclick="showTab('rewards',this)">🎁 Rewards</span>
+    <span class="nav-link" onclick="showTab('news',this)">📢 News</span>
+    <span class="nav-link discord" onclick="openDiscord()">💬 Discord</span>
+  </div>
+</nav>
 
-  <nav id="sidebar">
-    <button class="menu-btn" data-page="home">🏠 Home</button>
-    <button class="menu-btn" data-page="rewards">🎁 Rewards</button>
-    <button class="menu-btn" data-page="discord">💬 Discord</button>
-    <button class="menu-btn" data-page="mrsikandar">👑 MrSikandar</button>
-  </nav>
+<!-- HOME TAB -->
+<div class="page active" id="tab-home">
+  <div class="container page-content">
+    <div class="hero">
+      <div class="server-badge">⛏ MINECRAFT SMP</div>
+      <h1>Mr.Sikandar's Lapata SMP</h1>
+      <p class="subtitle">The Ultimate Survival SMP</p>
+      <div class="ip-tag" onclick="copyIP()" title="Click to copy">📡 fakelapataop.aternos.me:43833</div>
+      <br/>
+      <a class="discord-btn" onclick="openDiscord()">💬 Join Our Discord</a>
+    </div>
 
-  <main id="main-content">
-    <!-- HOME -->
-    <div id="home" class="page active">
-      <div class="hero">
-        <h1>Welcome to the Ultimate Minecraft Server!</h1>
-        <div class="server-info">
-          <p><strong>Java IP:</strong> Fakelapataop.aternos.me:43833</p>
-          <p><strong>Bedrock IP:</strong> Fakelapataop.aternos.me Port: 43833</p>
-          <p><strong>Version:</strong> 1.21.4</p>
-          <p><strong>Gamemodes:</strong> Survival • Lifesteal </p>
-          <p><strong>Useful Commands:</strong><br>/spawn • /home • /tpa • /shop </p>
-        </div>
-        <p class="join-text">Claim daily rewards & spin for epic prizes!</p>
+    <!-- 4 Option Cards (3 original + Rewards) -->
+    <div class="options-grid">
+      <div class="option-card" onclick="showTab('appeal',document.querySelector('[onclick*=appeal]'))">
+        <div class="emoji">📝</div>
+        <div class="title">APPEAL BAN</div>
+        <div class="desc">Got banned? Submit your appeal here</div>
+      </div>
+      <div class="option-card" onclick="showTab('rules',document.querySelector('[onclick*=rules]'))">
+        <div class="emoji">📜</div>
+        <div class="title">SERVER RULES</div>
+        <div class="desc">Read before you play</div>
+      </div>
+      <div class="option-card" onclick="showTab('staff',document.querySelector('[onclick*=staff]'))">
+        <div class="emoji">👥</div>
+        <div class="title">MEET STAFF</div>
+        <div class="desc">Our amazing team</div>
+      </div>
+      <div class="option-card" onclick="showTab('rewards',document.querySelector('[onclick*=rewards]'))">
+        <div class="emoji">🎁</div>
+        <div class="title">DAILY REWARDS</div>
+        <div class="desc">Spin & Claim Rewards</div>
       </div>
     </div>
 
-    <!-- REWARDS -->
-    <div id="rewards" class="page">
-      <h2>🎁 Daily Rewards & Spinner</h2>
-      <input type="text" id="username" placeholder="Enter Minecraft Username" class="username-input">
+    <footer>
+      <p>Mr.Sikandar's Lapata SMP &copy; 2026 &nbsp;|&nbsp; IP: <span>fakelapataop.aternos.me:43833</span></p>
+    </footer>
+  </div>
+</div>
 
-      <div class="daily-section">
+<!-- APPEAL TAB -->
+<div class="page" id="tab-appeal">
+  <div class="container page-content">
+    <div class="rules-box">
+      <h3>📜 Appeal Guidelines</h3>
+      <ul>
+        <li>Be honest — lying results in a permanent ban.</li>
+        <li>Only submit one appeal per ban. Spamming = auto-denied.</li>
+        <li>Appeals are reviewed within 24–72 hours by admins.</li>
+        <li>Your exact in-game name (IGN) is required.</li>
+        <li>Include as much detail as possible.</li>
+        <li>Accepted appeals may still come with a warning.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">📝 Submit Your Appeal</div>
+      <form id="appealForm" onsubmit="submitAppeal(event)">
+        <div class="form-row">
+          <label>In-Game Name (IGN) *</label>
+          <input type="text" id="ign" placeholder="Your Minecraft username" required maxlength="16"/>
+        </div>
+        <div class="form-row">
+          <label>Discord Tag (optional)</label>
+          <input type="text" id="discord" placeholder="e.g. yourname#0001"/>
+        </div>
+        <div class="form-row">
+          <label>Punishment Type *</label>
+          <select id="punishType" required>
+            <option value="" disabled selected>-- Select --</option>
+            <option value="ban">Ban</option>
+            <option value="mute">Mute</option>
+            <option value="kick">Kick (Repeated)</option>
+            <option value="warning">Warning Appeal</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Ban Date *</label>
+          <input type="date" id="banDate" required/>
+        </div>
+        <div class="form-row">
+          <label>Ban/Mute Reason (if known)</label>
+          <input type="text" id="reason" placeholder="What were you told or what did you do?"/>
+        </div>
+        <div class="form-row">
+          <label>Your Appeal *</label>
+          <textarea id="appeal" rows="5" maxlength="1000" placeholder="Explain what happened..." required oninput="updateCount()"></textarea>
+          <div class="char-count"><span id="charCount">0</span>/1000</div>
+        </div>
+        <div class="form-row">
+          <label>Screenshot / Evidence Link (optional)</label>
+          <input type="url" id="evidence" placeholder="https://imgur.com/your-screenshot"/>
+        </div>
+        <div class="form-row">
+          <label class="checkbox-row">
+            <input type="checkbox" id="agreeRules" required/>
+            <span>I have read and understood the <strong style="color:var(--gold);cursor:pointer;" onclick="showTab('rules',document.querySelector('[onclick*=rules]'))">Server Rules</strong></span>
+          </label>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">▶ SUBMIT APPEAL</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- REWARDS TAB -->
+<div class="page" id="tab-rewards">
+  <div class="container page-content">
+    <div class="card">
+      <div class="card-title">🎁 DAILY REWARDS & SPINNER</div>
+      
+      <input type="text" id="username" placeholder="Enter Your Minecraft Username" class="username-input">
+
+      <div style="text-align:center; margin:20px 0;">
         <button id="dailyBtn" class="claim-btn">Claim Daily Reward</button>
-        <p id="streak-info">Current Streak: <span id="streak-day">0</span> days</p>
-        <p id="spins-left">Spins Left Today: <span id="spins-count">0</span></p>
-
-        <!-- Temporary test button - remove when done testing -->
-        <button id="testResetBtn" style="margin-top:20px; background:#ff4444; color:white; padding:12px 20px; border:none; border-radius:8px; font-size:1rem; cursor:pointer;">
-          Reset Spinner (Test Only)
-        </button>
+        <p style="margin:10px 0; font-family:'VT323',monospace;">Current Streak: <span id="streak-day" style="color:var(--gold);">0</span> days</p>
+        <p style="margin:10px 0; font-family:'VT323',monospace;">Spins Left Today: <span id="spins-count" style="color:var(--green);">0</span></p>
       </div>
 
-      <div id="spinner-section">
-        <div class="wheel-container">
-          <div class="pointer">▼</div>
-          <canvas id="wheel" width="320" height="320"></canvas>
-          <button id="spinBtn" class="spin-btn">SPIN NOW</button>
-        </div>
-        <p id="spin-result"></p>
+      <div class="wheel-container">
+        <div class="pointer">▼</div>
+        <canvas id="wheel" width="340" height="340"></canvas>
+        <button id="spinBtn" class="spin-btn">SPIN NOW</button>
       </div>
+      <p id="spin-result"></p>
     </div>
+  </div>
+</div>
 
-    <!-- DISCORD -->
-    <div id="discord" class="page">
-      <h2>💬 Join Our Discord</h2>
-      <p>Get exclusive rewards, announcements & chat with everyone!</p>
-      <a href="https://discord.gg/yourserver" target="_blank" class="discord-btn">JOIN DISCORD SERVER</a>
-      <p class="note">(replace link with your real invite)</p>
-    </div>
+<div id="toast"></div>
 
-    <!-- ABOUT -->
-    <div id="mrsikandar" class="page">
-      <h2>👑 About MrSikandarYT</h2>
-      <p>Official server owner & Minecraft content creator.</p>
-      <a href="https://youtube.com/@Mr.SikandarOfficalYT" target="_blank" class="yt-btn">YouTube Channel</a>
-    </div>
-  </main>
+<script>
+// ==================== REWARD SYSTEM (Spinner + Daily) ====================
+const STORAGE = { username: 'mcUsername', streak: 'dailyStreak', lastClaim: 'lastDailyClaim', lastSpin: 'lastSpinDate', bonusSpinsToday: 'bonusSpinsToday' };
 
-  <script src="script.js"></script>
+const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
+const API_KEY = "Sikandar123";
+
+async function sendRewardToBot(username, reward) {
+  try {
+    await fetch(`${NODEJS_URL}/reward`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, reward, key: API_KEY })
+    });
+  } catch(e) {}
+}
+
+const canvas = document.getElementById('wheel');
+const ctx = canvas?.getContext('2d');
+let rotation = 0;
+
+const segments = [
+  { text: "1 Hit Sword (1 use)", color: "#ff0000", weight: 5 },
+  { text: "Try Again", color: "#666666", weight: 20 },
+  { text: "500k Money", color: "#00ff00", weight: 25 },
+  { text: "Try Again", color: "#666666", weight: 15 },
+  { text: "5 Million!", color: "#ffd700", weight: 8 },
+  { text: "3 Try Again", color: "#666666", weight: 12 },
+  { text: "100k Money", color: "#00ff00", weight: 20 },
+  { text: "Try Again", color: "#666666", weight: 15 }
+];
+
+function drawWheel(rot = 0) {
+  if (!ctx) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const cx = canvas.width / 2, cy = canvas.height / 2, radius = 145;
+  const step = (Math.PI * 2) / segments.length;
+  for (let i = 0; i < segments.length; i++) {
+    const start = i * step + rot;
+    const end = (i + 1) * step + rot;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end); ctx.closePath();
+    ctx.fillStyle = segments[i].color; ctx.fill();
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 4; ctx.stroke();
+
+    const mid = start + step / 2;
+    const tx = cx + Math.cos(mid) * (radius * 0.68);
+    const ty = cy + Math.sin(mid) * (radius * 0.68);
+    ctx.save(); ctx.translate(tx, ty);
+    let rotText = mid + Math.PI / 2;
+    if (rotText > Math.PI / 2 && rotText < Math.PI * 1.5) { rotText += Math.PI; ctx.scale(-1, -1); }
+    ctx.rotate(rotText);
+    ctx.font = "bold 10px Arial Black"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.strokeText(segments[i].text, 0, 0); ctx.fillText(segments[i].text, 0, 0);
+    ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(cx, cy, radius + 12, 0, Math.PI * 2);
+  ctx.strokeStyle = "#00ff41"; ctx.lineWidth = 14; ctx.stroke();
+}
+
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function isNewDay(last) { return !last || getToday() !== last; }
+
+function resetIfNewDay() {
+  const today = getToday();
+  const lastClaim = localStorage.getItem(STORAGE.lastClaim);
+  if (isNewDay(lastClaim)) {
+    let streak = parseInt(localStorage.getItem(STORAGE.streak)) || 0;
+    if (lastClaim && (new Date() - new Date(lastClaim)) > 86400000 * 1.2) streak = 0;
+    localStorage.setItem(STORAGE.streak, streak);
+    localStorage.setItem(STORAGE.bonusSpinsToday, '0');
+  }
+}
+
+function getAvailableSpins() {
+  resetIfNewDay();
+  const bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)) || 0;
+  const lastSpin = localStorage.getItem(STORAGE.lastSpin);
+  return bonus + (isNewDay(lastSpin) ? 1 : 0);
+}
+
+function consumeSpin() {
+  resetIfNewDay();
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday)) || 0;
+  if (bonus > 0) localStorage.setItem(STORAGE.bonusSpinsToday, bonus - 1);
+  else localStorage.setItem(STORAGE.lastSpin, getToday());
+}
+
+function getPrize() {
+  let total = segments.reduce((a, b) => a + b.weight, 0);
+  let r = Math.random() * total, sum = 0;
+  for (let s of segments) {
+    sum += s.weight;
+    if (r <= sum) return s;
+  }
+  return segments[0];
+}
+
+async function startSpin() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Enter Minecraft username first!");
+  if (getAvailableSpins() <= 0) return alert("No spins left today!");
+
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true; btn.textContent = "SPINNING...";
+
+  consumeSpin();
+  updateSpinsDisplay();
+
+  const prize = getPrize();
+  // Simple spin animation
+  let rot = 0;
+  const duration = 5000;
+  const start = Date.now();
+  const finalRot = Math.random() * 360 + 1800;
+
+  function animate() {
+    const elapsed = Date.now() - start;
+    const progress = Math.min(elapsed / duration, 1);
+    rot = finalRot * (1 - Math.pow(1 - progress, 3));
+    drawWheel(rot * Math.PI / 180);
+
+    if (progress < 1) requestAnimationFrame(animate);
+    else {
+      btn.disabled = false; btn.textContent = "SPIN NOW";
+      document.getElementById('spin-result').innerHTML = `🎉 YOU GOT: <strong>${prize.text}</strong>!`;
+      sendRewardToBot(username, prize.text);
+    }
+  }
+  animate();
+}
+
+async function claimDaily() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) return alert("Enter Minecraft username first!");
+
+  resetIfNewDay();
+  const today = getToday();
+  if (localStorage.getItem(STORAGE.lastClaim) === today) return alert("You already claimed today!");
+
+  let streak = parseInt(localStorage.getItem(STORAGE.streak)) || 0;
+  streak++;
+  localStorage.setItem(STORAGE.streak, streak);
+  localStorage.setItem(STORAGE.lastClaim, today);
+
+  alert(`✅ Day ${streak} Claimed!`);
+  updateStreakDisplay();
+  updateSpinsDisplay();
+}
+
+function updateStreakDisplay() { document.getElementById('streak-day').textContent = localStorage.getItem(STORAGE.streak) || 0; }
+function updateSpinsDisplay() { document.getElementById('spins-count').textContent = getAvailableSpins(); }
+
+// Tab System
+function showTab(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+
+  if (name === 'rewards') {
+    drawWheel(0);
+    updateStreakDisplay();
+    updateSpinsDisplay();
+  }
+}
+
+function openDiscord() { window.open('https://discord.gg/yourinvite', '_blank'); }
+function copyIP() {
+  navigator.clipboard.writeText('fakelapataop.aternos.me:43833');
+  showToast('✅ IP Copied!');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function updateCount() { document.getElementById('charCount').textContent = document.getElementById('appeal').value.length; }
+function submitAppeal(e) { e.preventDefault(); alert("✅ Appeal Submitted!"); document.getElementById('appealForm').reset(); updateCount(); }
+
+// Init
+window.addEventListener('load', () => {
+  const uname = document.getElementById('username');
+  if (uname) {
+    uname.value = localStorage.getItem(STORAGE.username) || '';
+    uname.addEventListener('input', e => localStorage.setItem(STORAGE.username, e.target.value.trim()));
+  }
+  document.getElementById('spinBtn').addEventListener('click', startSpin);
+  document.getElementById('dailyBtn').addEventListener('click', claimDaily);
+});
+</script>
 </body>
 </html>
