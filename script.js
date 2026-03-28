@@ -298,3 +298,31 @@ window.addEventListener('load', () => {
   // For testing
   // document.getElementById('testResetBtn')?.addEventListener('click', () => { ... });
 });
+
+// ==================== ADBLOCK DETECTION ====================
+function detectAdBlock() {
+  var ad = document.createElement("div");
+  ad.className = "adsbox";
+  ad.style.position = "absolute";
+  ad.style.height = "1px";
+  ad.style.width = "1px";
+  ad.style.left = "-999px";
+  document.body.appendChild(ad);
+
+  setTimeout(function() {
+    if (ad.offsetHeight === 0) {
+      var overlay = document.getElementById("adblock-overlay");
+      if (overlay) {
+        overlay.style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+    }
+    ad.remove();
+  }, 100);
+}
+
+// check repeatedly
+window.addEventListener("load", function() {
+  detectAdBlock();
+  setInterval(detectAdBlock, 2000);
+});
