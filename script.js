@@ -12,7 +12,7 @@ const STORAGE = {
 // ──────────────────────────────────────────────
 // YOUR NODE.JS BACKEND
 // ──────────────────────────────────────────────
-const NODEJS_URL = "https://990bcd1e-2e9d-4b31-95ae-d02835f0239c-00-1qirfplstlop.pike.replit.dev";
+const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev";
 const API_KEY = "Sikandar123";
 
 // Send reward to Node.js + Discord
