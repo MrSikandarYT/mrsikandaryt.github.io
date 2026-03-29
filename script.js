@@ -1,4 +1,4 @@
-// STORAGE KEYS
+// ==================== STORAGE KEYS ====================
 const STORAGE = {
   username: 'mcUsername',
   streak: 'dailyStreak',
@@ -7,10 +7,11 @@ const STORAGE = {
   bonusSpinsToday: 'bonusSpinsToday'
 };
 
-// NODE.JS BACKEND
-const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev";
+// ==================== BACKEND CONFIG ====================
+const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev"; // Correct URL
 const API_KEY = "Sikandar123";
 
+// ==================== SEND REWARD ====================
 async function sendRewardToBot(username, reward) {
   if (!reward.toLowerCase().includes("try again")) {
     try {
@@ -28,7 +29,7 @@ async function sendRewardToBot(username, reward) {
   }
 }
 
-// WHEEL
+// ==================== WHEEL ====================
 const canvas = document.getElementById('wheel');
 const ctx = canvas?.getContext('2d');
 let rotation = 0, spinning = false;
@@ -76,7 +77,7 @@ function drawWheel(rot = 0) {
   ctx.strokeStyle="#0f0"; ctx.lineWidth=14; ctx.stroke();
 }
 
-// DAILY REWARDS
+// ==================== DAILY REWARDS ====================
 const DAILY_REWARDS = {
   1: { text: "10k Money" },
   2: { text: "50k Money" },
@@ -87,45 +88,43 @@ const DAILY_REWARDS = {
   7: { text: "1 Million + 2 Spins", spins: 2 }
 };
 
-// HELPER FUNCTIONS
-function getToday(){return new Date().toISOString().split('T')[0];}
-function isNewDay(last){return !last||getToday()!==last;}
+// ==================== HELPER FUNCTIONS ====================
+function getToday(){ return new Date().toISOString().split('T')[0]; }
+function isNewDay(last){ return !last || getToday()!==last; }
 function resetIfNewDay(){
-  const today=getToday();
-  const lastClaim=localStorage.getItem(STORAGE.lastClaim);
+  const today = getToday();
+  const lastClaim = localStorage.getItem(STORAGE.lastClaim);
   if(isNewDay(lastClaim)){
-    let streak=parseInt(localStorage.getItem(STORAGE.streak))||0;
-    if(lastClaim && (new Date()-new Date(lastClaim))>86400000*1.2) streak=0;
-    localStorage.setItem(STORAGE.streak,streak);
+    localStorage.setItem(STORAGE.streak, '0');
     localStorage.setItem(STORAGE.bonusSpinsToday,'0');
   }
 }
 function getAvailableSpins(){
   resetIfNewDay();
-  const bonus=parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
-  const lastSpin=localStorage.getItem(STORAGE.lastSpin);
-  const daily=isNewDay(lastSpin)?1:0;
-  return bonus+daily;
+  const bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
+  const lastSpin = localStorage.getItem(STORAGE.lastSpin);
+  const daily = isNewDay(lastSpin)?1:0;
+  return bonus + daily;
 }
 function consumeSpin(){
   resetIfNewDay();
-  let bonus=parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
-  if(bonus>0) localStorage.setItem(STORAGE.bonusSpinsToday,bonus-1);
+  let bonus = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
+  if(bonus>0) localStorage.setItem(STORAGE.bonusSpinsToday, bonus-1);
   else localStorage.setItem(STORAGE.lastSpin,getToday());
 }
 function getPrize(){
-  let total=segments.reduce((a,b)=>a+b.weight,0);
-  let r=Math.random()*total, sum=0;
-  for(let s of segments){sum+=s.weight;if(r<=sum)return s;}
+  let total = segments.reduce((a,b)=>a+b.weight,0);
+  let r = Math.random()*total, sum=0;
+  for(let s of segments){ sum+=s.weight; if(r<=sum) return s; }
   return segments[0];
 }
 
-// SPIN
+// ==================== SPIN ====================
 async function startSpin(){
   const username=document.getElementById('username')?.value.trim();
-  if(!username)return alert("Enter Minecraft username!");
+  if(!username) return alert("Enter Minecraft username!");
   const avail=getAvailableSpins();
-  if(avail<=0)return alert("No spins left!");
+  if(avail<=0) return alert("No spins left!");
   spinning=true;
   const btn=document.getElementById('spinBtn'); if(btn){btn.disabled=true; btn.textContent="SPINNING...";}
   consumeSpin();
@@ -143,50 +142,51 @@ async function startSpin(){
     const ease=1-Math.pow(1-p,3.5);
     rotation=startRot+ease*totalRot;
     drawWheel(rotation);
-    if(p<1)requestAnimationFrame(animate);
+    if(p<1) requestAnimationFrame(animate);
     else{
       spinning=false;
       if(btn){btn.disabled=false; btn.textContent="SPIN NOW";}
       document.getElementById('spin-result')?.innerHTML=`🎉 YOU GOT: <strong>${prize.text}</strong>!`;
-      await sendRewardToBot(username, prize.text);
-      if(prize.text.includes("Million")||prize.text.includes("Sword")) confettiBurst();
+      sendRewardToBot(username, prize.text);
     }
   } animate();
 }
 
-// DAILY CLAIM
+// ==================== DAILY CLAIM ====================
 async function claimDaily(){
   const username=document.getElementById('username')?.value.trim();
-  if(!username)return alert("Enter Minecraft username!");
+  if(!username) return alert("Enter Minecraft username!");
   resetIfNewDay();
-  const today=getToday();
+  const today = getToday();
   if(localStorage.getItem(STORAGE.lastClaim)===today) return alert("Already claimed today!");
-  let streak=parseInt(localStorage.getItem(STORAGE.streak))||0; streak++;
+  let streak = parseInt(localStorage.getItem(STORAGE.streak))||0; streak++;
   localStorage.setItem(STORAGE.streak,streak);
   localStorage.setItem(STORAGE.lastClaim,today);
-  const day=((streak-1)%7)+1;
-  const reward=DAILY_REWARDS[day];
+  const day = ((streak-1)%7)+1;
+  const reward = DAILY_REWARDS[day];
   if(reward.spins){
-    let cur=parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
-    localStorage.setItem(STORAGE.bonusSpinsToday,cur+reward.spins);
+    let cur = parseInt(localStorage.getItem(STORAGE.bonusSpinsToday))||0;
+    localStorage.setItem(STORAGE.bonusSpinsToday, cur+reward.spins);
   }
   alert(`✅ Day ${streak} Claimed!\n${reward.text}\nSpins added: ${reward.spins||0}`);
-  await sendRewardToBot(username,reward.text);
+  sendRewardToBot(username,reward.text);
   updateStreakDisplay(); updateSpinsDisplay();
 }
 
-// UI
-function updateStreakDisplay(){document.getElementById('streak-day')?.textContent=localStorage.getItem(STORAGE.streak)||0;}
-function updateSpinsDisplay(){document.getElementById('spins-count')?.textContent=getAvailableSpins();}
+// ==================== UI ====================
+function updateStreakDisplay(){ document.getElementById('streak-day')?.textContent=localStorage.getItem(STORAGE.streak)||0; }
+function updateSpinsDisplay(){ document.getElementById('spins-count')?.textContent=getAvailableSpins(); }
 
-// INIT
-window.addEventListener('load',()=>{
+// ==================== INIT ====================
+window.addEventListener('load', ()=>{
   drawWheel();
-  document.getElementById('spinBtn')?.addEventListener('click',startSpin);
-  document.getElementById('dailyBtn')?.addEventListener('click',claimDaily);
+  document.getElementById('spinBtn')?.addEventListener('click', startSpin);
+  document.getElementById('dailyBtn')?.addEventListener('click', claimDaily);
   const uname=document.getElementById('username');
   if(uname){
     uname.value=localStorage.getItem(STORAGE.username)||'';
     uname.addEventListener('input',e=>localStorage.setItem(STORAGE.username,e.target.value.trim()));
   }
+  updateStreakDisplay();
+  updateSpinsDisplay();
 });
