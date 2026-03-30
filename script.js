@@ -8,7 +8,7 @@ const STORAGE = {
 };
 
 // ==================== BACKEND CONFIG ====================
-const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev"; // Correct URL
+const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev";
 const API_KEY = "Sikandar123";
 
 // ==================== SEND REWARD ====================
@@ -33,7 +33,6 @@ async function sendRewardToBot(username, reward) {
 const canvas = document.getElementById('wheel');
 const ctx = canvas?.getContext('2d');
 let rotation = 0, spinning = false;
-
 const segments = [
   { text: "1 Hit Sword (1 use)", color: "#ff0000", weight: 5 },
   { text: "Try Again", color: "#666", weight: 20 },
