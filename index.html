@@ -119,37 +119,37 @@
 
 <script src="script.js"></script>
 
-<!-- Anti-Adblocker Detection Script -->
+<!-- Anti-Adblocker Detection Script (placed safely at the end) -->
 <script>
-function detectAdblock() {
-  const bait = document.getElementById('ads-bait');
-  const overlay = document.getElementById('adblock-overlay');
-  
-  setTimeout(() => {
-    const isAdblocked = !bait || 
-                       bait.offsetParent === null || 
-                       bait.offsetHeight === 0 || 
-                       window.getComputedStyle(bait).display === 'none';
+  function detectAdblock() {
+    const bait = document.getElementById('ads-bait');
+    const overlay = document.getElementById('adblock-overlay');
+    
+    setTimeout(() => {
+      const isAdblocked = !bait || 
+                         bait.offsetParent === null || 
+                         bait.offsetHeight === 0 || 
+                         window.getComputedStyle(bait).display === 'none';
 
-    if (isAdblocked) {
-      overlay.style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    } else {
-      overlay.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-  }, 1200);
-}
-
-// Run detection when page loads
-window.addEventListener('load', detectAdblock);
-
-// Re-check if overlay is visible
-setInterval(() => {
-  if (document.getElementById('adblock-overlay').style.display === 'block') {
-    detectAdblock();
+      if (isAdblocked) {
+        overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      } else {
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }, 1500);
   }
-}, 4000);
+
+  // Run detection after everything loads
+  window.addEventListener('load', detectAdblock);
+
+  // Re-check every few seconds if popup is showing
+  setInterval(() => {
+    if (document.getElementById('adblock-overlay').style.display === 'block') {
+      detectAdblock();
+    }
+  }, 4000);
 </script>
 
 </body>
