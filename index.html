@@ -357,57 +357,82 @@ window.addEventListener('load', () => {
   updateSpinsDisplay();
 });
 </script>
-  <!-- ===== IMPROVED ANTI-ADBLOCK (Non-annoying - 2026) ===== -->
+  
+<!-- ===== IMPROVED ANTI-ADBLOCK (Based on your old code - Fixed False Positives) ===== -->
 <script>
 (function() {
+    const overlay = document.getElementById('adblock-overlay');
+    let checkCount = 0;
     let adblockDetected = false;
-    let overlayShown = false;
 
     function detectAdblock() {
-        // Only run detection if overlay not already shown
-        if (overlayShown) return;
+        if (adblockDetected) return; // Already detected, no need to check again
 
-        const overlay = document.getElementById('adblock-overlay');
+        checkCount++;
 
-        // Method 1: Create bait elements (less aggressive)
-        const bait = document.createElement('div');
-        bait.style.height = '1px';
-        bait.style.width = '1px';
-        bait.style.position = 'absolute';
-        bait.style.left = '-9999px';
-        bait.style.top = '-9999px';
-        bait.className = 'adsbygoogle ad adsbox';
-        document.body.appendChild(bait);
+        // Method 1: Bait elements
+        const baits = [
+            {class: 'adsbox ad adsbygoogle', height: 50},
+            {id: 'google_ads_iframe_', height: 1},
+            {class: 'ad-unit', height: 30}
+        ];
 
+        let blocked = false;
+
+        baits.forEach(bait => {
+            const el = document.createElement('div');
+            if (bait.class) el.className = bait.class;
+            if (bait.id) el.id = bait.id;
+            el.style.height = bait.height + 'px';
+            el.style.width = '300px';
+            el.style.position = 'absolute';
+            el.style.left = '-99999px';
+            el.style.top = '-99999px';
+            document.body.appendChild(el);
+
+            setTimeout(() => {
+                if (el.offsetHeight < 5) {
+                    blocked = true;
+                }
+                el.remove();
+            }, 100);
+        });
+
+        // Method 2: Check Monetag scripts (your original method, but softer)
+        const monetagScripts = document.querySelectorAll('script[src*="quge5.com"]');
+        if (monetagScripts.length < 2) {
+            blocked = true;
+        }
+
+        // Final decision after checks
         setTimeout(() => {
-            if (bait.offsetHeight === 0 || bait.offsetParent === null) {
+            if (blocked) {
                 adblockDetected = true;
+                if (overlay) overlay.style.display = 'block';
+            } else if (checkCount >= 2) {
+                // If after 2 checks nothing is blocked → hide overlay (important fix)
+                if (overlay) overlay.style.display = 'none';
             }
-            bait.remove();
-
-            // Show overlay ONLY if adblock is actually detected
-            if (adblockDetected && overlay && !overlayShown) {
-                overlay.style.display = 'block';
-                overlayShown = true;
-            }
-        }, 200);
+        }, 300);
     }
 
-    // Run detection gently
+    // Run detection
     window.addEventListener('load', () => {
-        // First check after page fully loads
-        setTimeout(detectAdblock, 1200);
-
-        // Only one more check after 4 seconds
-        setTimeout(detectAdblock, 4000);
+        detectAdblock();           // First check
+        setTimeout(detectAdblock, 1500);   // Second check
+        setTimeout(detectAdblock, 4000);   // Final check
     });
 
-    // Optional: Allow user to close overlay manually (recommended)
-    // Add this inside your adblock-overlay div if you want a close button:
-    // <button onclick="this.parentElement.style.display='none'" style="margin-top:20px;padding:10px 20px;">I Disabled AdBlock - Continue</button>
+    // Re-check every 8 seconds (so if user disables adblock later, popup disappears)
+    setInterval(() => {
+        if (overlay && overlay.style.display === 'block') {
+            detectAdblock();
+        }
+    }, 8000);
 
 })();
 </script>
-<!-- ===== END FIXED ANTI-ADBLOCK ===== -->
+<!-- ===== END IMPROVED ANTI-ADBLOCK ===== -->
+  
 </body>
 </html>
