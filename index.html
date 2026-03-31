@@ -358,81 +358,64 @@ window.addEventListener('load', () => {
 });
 </script>
   
-<!-- ===== IMPROVED ANTI-ADBLOCK (Based on your old code - Fixed False Positives) ===== -->
+<!-- ===== FIXED ANTI-ADBLOCK (Minimal False Positives - 2026) ===== -->
 <script>
 (function() {
     const overlay = document.getElementById('adblock-overlay');
-    let checkCount = 0;
+    let detectionAttempts = 0;
     let adblockDetected = false;
 
-    function detectAdblock() {
-        if (adblockDetected) return; // Already detected, no need to check again
-
-        checkCount++;
-
-        // Method 1: Bait elements
-        const baits = [
-            {class: 'adsbox ad adsbygoogle', height: 50},
-            {id: 'google_ads_iframe_', height: 1},
-            {class: 'ad-unit', height: 30}
-        ];
-
-        let blocked = false;
-
-        baits.forEach(bait => {
-            const el = document.createElement('div');
-            if (bait.class) el.className = bait.class;
-            if (bait.id) el.id = bait.id;
-            el.style.height = bait.height + 'px';
-            el.style.width = '300px';
-            el.style.position = 'absolute';
-            el.style.left = '-99999px';
-            el.style.top = '-99999px';
-            document.body.appendChild(el);
-
-            setTimeout(() => {
-                if (el.offsetHeight < 5) {
-                    blocked = true;
-                }
-                el.remove();
-            }, 100);
-        });
-
-        // Method 2: Check Monetag scripts (your original method, but softer)
-        const monetagScripts = document.querySelectorAll('script[src*="quge5.com"]');
-        if (monetagScripts.length < 2) {
-            blocked = true;
-        }
-
-        // Final decision after checks
-        setTimeout(() => {
-            if (blocked) {
-                adblockDetected = true;
-                if (overlay) overlay.style.display = 'block';
-            } else if (checkCount >= 2) {
-                // If after 2 checks nothing is blocked → hide overlay (important fix)
-                if (overlay) overlay.style.display = 'none';
-            }
-        }, 300);
+    function createBait() {
+        const bait = document.createElement('div');
+        bait.style.height = '50px';
+        bait.style.width = '300px';
+        bait.style.position = 'absolute';
+        bait.style.left = '-99999px';
+        bait.style.top = '-99999px';
+        bait.className = 'adsbox adsbygoogle ad-unit pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+        document.body.appendChild(bait);
+        return bait;
     }
 
-    // Run detection
+    function detectAdblock() {
+        if (adblockDetected || detectionAttempts > 3) return;
+        detectionAttempts++;
+
+        const bait = createBait();
+
+        setTimeout(() => {
+            const isBlocked = (bait.offsetHeight < 10 || bait.offsetParent === null);
+
+            bait.remove();
+
+            if (isBlocked) {
+                adblockDetected = true;
+                if (overlay) overlay.style.display = 'block';
+            } else if (detectionAttempts >= 2) {
+                // No adblock detected after checks → make sure overlay is hidden
+                if (overlay) overlay.style.display = 'none';
+            }
+        }, 150);
+    }
+
+    // Run checks at good intervals
     window.addEventListener('load', () => {
-        detectAdblock();           // First check
-        setTimeout(detectAdblock, 1500);   // Second check
-        setTimeout(detectAdblock, 4000);   // Final check
+        setTimeout(detectAdblock, 800);
+        setTimeout(detectAdblock, 2500);
+        setTimeout(detectAdblock, 5000);
     });
 
-    // Re-check every 8 seconds (so if user disables adblock later, popup disappears)
+    // Re-check periodically so popup disappears if user disables adblocker
     setInterval(() => {
         if (overlay && overlay.style.display === 'block') {
+            detectionAttempts = 0;   // Reset attempts
             detectAdblock();
         }
-    }, 8000);
+    }, 7000);
 
 })();
 </script>
-<!-- ===== END IMPROVED ANTI-ADBLOCK ===== -->
+<!-- ===== END FIXED ANTI-ADBLOCK ===== -->
   
 </body>
 </html>
