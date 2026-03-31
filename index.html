@@ -357,53 +357,66 @@ window.addEventListener('load', () => {
   updateSpinsDisplay();
 });
 </script>
-<!-- ===== ANTI ADBLOCK - EASY TO UNDERSTAND ===== -->
+  
+<!-- ===== SUPER STRONG ANTI ADBLOCK 2026 ===== -->
 <script>
 (function() {
+    let adblockDetected = false;
 
-    let detected = false;   // ← Start: Assume no adblock
+    function detectAdblock() {
+        // Method 1: Multiple strong baits
+        const baits = [
+            {class: 'adsbox ad adsbygoogle', height: 50},
+            {id: 'google_ads_iframe_', height: 1},
+            {class: 'ad-unit', height: 1},
+            {id: 'adblock-test', height: 30}
+        ];
 
-    function checkAdblock() {
+        baits.forEach(bait => {
+            const el = document.createElement('div');
+            if (bait.class) el.className = bait.class;
+            if (bait.id) el.id = bait.id;
+            el.style.height = bait.height + 'px';
+            el.style.width = '300px';
+            el.style.position = 'absolute';
+            el.style.left = '-99999px';
+            el.style.top = '-99999px';
+            document.body.appendChild(el);
 
-        // Creating test boxes (baits) that adblockers usually hide
-        const bait1 = document.createElement('div');
-        bait1.className = 'adsbox ad adsbygoogle';
-        bait1.style.height = '50px';
-        bait1.style.width = '300px';
-        bait1.style.position = 'absolute';
-        bait1.style.left = '-9999px';
-        document.body.appendChild(bait1);
+            setTimeout(() => {
+                if (el.offsetHeight < 5) {
+                    adblockDetected = true;
+                }
+                el.remove();
+            }, 150);
+        });
 
-        setTimeout(() => {
-            // If the height is almost 0, means adblock hid it
-            if (bait1.offsetHeight < 10) {
-                detected = true;     // ← Now we know adblock is ON
-            }
-
-            bait1.remove();
-
-            if (detected) {
-                showWarning();
-            }
-        }, 400);
-    }
-
-    function showWarning() {
-        const overlay = document.getElementById('adblock-overlay');
-        if (overlay) {
-            overlay.style.display = 'block';
+        // Method 2: Check if Monetag script is blocked
+        if (typeof window.monetag === 'undefined' && document.querySelectorAll('script[src*="quge5.com"]').length < 2) {
+            adblockDetected = true;
         }
+
+        // Show warning if detected
+        setTimeout(() => {
+            if (adblockDetected) {
+                const overlay = document.getElementById('adblock-overlay');
+                if (overlay) overlay.style.display = 'block';
+            }
+        }, 800);
     }
 
-    // Run checks
+    // Run it many times
     window.addEventListener('load', () => {
-        checkAdblock();
-        setTimeout(checkAdblock, 2000);
+        detectAdblock();
+        setTimeout(detectAdblock, 1000);
+        setTimeout(detectAdblock, 3000);
     });
 
-    setInterval(checkAdblock, 7000);
+    setInterval(detectAdblock, 5000);   // Keep checking
 
 })();
 </script>
+<!-- ===== END SUPER STRONG ANTI ADBLOCK ===== -->
+  
 </body>
 </html>
