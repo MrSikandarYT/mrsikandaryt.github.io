@@ -357,52 +357,53 @@ window.addEventListener('load', () => {
   updateSpinsDisplay();
 });
 </script>
-  
-  <!-- ===== ANTI ADBLOCK SCRIPT ===== -->
+<!-- ===== ANTI ADBLOCK - EASY TO UNDERSTAND ===== -->
 <script>
 (function() {
-    let adblockDetected = false;
 
-    function detectAdblock() {
-        // Method 1: Bait element
-        const bait = document.createElement('div');
-        bait.style.height = '1px';
-        bait.style.width = '1px';
-        bait.style.position = 'absolute';
-        bait.style.left = '-9999px';
-        bait.id = 'ads-bait';
-        document.body.appendChild(bait);
+    let detected = false;   // ← Start: Assume no adblock
+
+    function checkAdblock() {
+
+        // Creating test boxes (baits) that adblockers usually hide
+        const bait1 = document.createElement('div');
+        bait1.className = 'adsbox ad adsbygoogle';
+        bait1.style.height = '50px';
+        bait1.style.width = '300px';
+        bait1.style.position = 'absolute';
+        bait1.style.left = '-9999px';
+        document.body.appendChild(bait1);
 
         setTimeout(() => {
-            if (bait.offsetHeight === 0 || window.getComputedStyle(bait).display === 'none') {
-                adblockDetected = true;
+            // If the height is almost 0, means adblock hid it
+            if (bait1.offsetHeight < 10) {
+                detected = true;     // ← Now we know adblock is ON
             }
-            bait.remove();
-        }, 200);
 
-        // Final check
-        setTimeout(() => {
-            if (adblockDetected) {
-                showAdblockWarning();
+            bait1.remove();
+
+            if (detected) {
+                showWarning();
             }
-        }, 800);
+        }, 400);
     }
 
-    function showAdblockWarning() {
+    function showWarning() {
         const overlay = document.getElementById('adblock-overlay');
         if (overlay) {
             overlay.style.display = 'block';
         }
     }
 
-    // Run detection when page loads
-    window.addEventListener('load', detectAdblock);
+    // Run checks
+    window.addEventListener('load', () => {
+        checkAdblock();
+        setTimeout(checkAdblock, 2000);
+    });
 
-    // Check again every 4 seconds (harder to bypass)
-    setInterval(detectAdblock, 4000);
+    setInterval(checkAdblock, 7000);
+
 })();
 </script>
-<!-- ===== END ANTI ADBLOCK ===== -->
-  
 </body>
 </html>
