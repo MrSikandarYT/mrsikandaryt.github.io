@@ -358,64 +358,69 @@ window.addEventListener('load', () => {
 });
 </script>
   
-<!-- ===== FIXED ANTI-ADBLOCK (Minimal False Positives - 2026) ===== -->
+<!-- ===== RELIABLE ANTI-ADBLOCK 2026 (Detects when ON, hides when OFF) ===== -->
 <script>
 (function() {
     const overlay = document.getElementById('adblock-overlay');
-    let detectionAttempts = 0;
-    let adblockDetected = false;
+    let attempts = 0;
+    let detected = false;
 
     function createBait() {
         const bait = document.createElement('div');
+        bait.className = 'adsbox adsbygoogle ad-unit pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads banner-ads banner_ads ad-zone';
         bait.style.height = '50px';
         bait.style.width = '300px';
         bait.style.position = 'absolute';
         bait.style.left = '-99999px';
         bait.style.top = '-99999px';
-        bait.className = 'adsbox adsbygoogle ad-unit pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+        bait.style.opacity = '0';
         document.body.appendChild(bait);
         return bait;
     }
 
     function detectAdblock() {
-        if (adblockDetected || detectionAttempts > 3) return;
-        detectionAttempts++;
+        if (detected || attempts > 4) return;
+        attempts++;
 
         const bait = createBait();
 
+        // Give adblocker time to act
         setTimeout(() => {
-            const isBlocked = (bait.offsetHeight < 10 || bait.offsetParent === null);
+            const height = bait.offsetHeight;
+            const isBlocked = (height < 10 || bait.offsetParent === null);
 
             bait.remove();
 
             if (isBlocked) {
-                adblockDetected = true;
+                detected = true;
                 if (overlay) overlay.style.display = 'block';
-            } else if (detectionAttempts >= 2) {
-                // No adblock detected after checks → make sure overlay is hidden
-                if (overlay) overlay.style.display = 'none';
+            } else if (attempts >= 3 && overlay) {
+                // No detection after multiple tries → ensure hidden
+                overlay.style.display = 'none';
             }
-        }, 150);
+        }, 180);
     }
 
-    // Run checks at good intervals
+    // Initial checks with increasing delay
     window.addEventListener('load', () => {
-        setTimeout(detectAdblock, 800);
-        setTimeout(detectAdblock, 2500);
-        setTimeout(detectAdblock, 5000);
+        setTimeout(detectAdblock, 600);
+        setTimeout(detectAdblock, 1800);
+        setTimeout(detectAdblock, 3500);
+        setTimeout(detectAdblock, 6000);
     });
 
-    // Re-check periodically so popup disappears if user disables adblocker
+    // Periodic re-check (so popup disappears if user disables adblocker)
     setInterval(() => {
         if (overlay && overlay.style.display === 'block') {
-            detectionAttempts = 0;   // Reset attempts
+            attempts = 0;
+            detected = false;
             detectAdblock();
         }
-    }, 7000);
+    }, 8000);
 
 })();
 </script>
-<!-- ===== END FIXED ANTI-ADBLOCK ===== -->
+<!-- ===== END RELIABLE ANTI-ADBLOCK ===== -->
   
 </body>
 </html>
