@@ -357,5 +357,52 @@ window.addEventListener('load', () => {
   updateSpinsDisplay();
 });
 </script>
+  
+  <!-- ===== ANTI ADBLOCK SCRIPT ===== -->
+<script>
+(function() {
+    let adblockDetected = false;
+
+    function detectAdblock() {
+        // Method 1: Bait element
+        const bait = document.createElement('div');
+        bait.style.height = '1px';
+        bait.style.width = '1px';
+        bait.style.position = 'absolute';
+        bait.style.left = '-9999px';
+        bait.id = 'ads-bait';
+        document.body.appendChild(bait);
+
+        setTimeout(() => {
+            if (bait.offsetHeight === 0 || window.getComputedStyle(bait).display === 'none') {
+                adblockDetected = true;
+            }
+            bait.remove();
+        }, 200);
+
+        // Final check
+        setTimeout(() => {
+            if (adblockDetected) {
+                showAdblockWarning();
+            }
+        }, 800);
+    }
+
+    function showAdblockWarning() {
+        const overlay = document.getElementById('adblock-overlay');
+        if (overlay) {
+            overlay.style.display = 'block';
+        }
+    }
+
+    // Run detection when page loads
+    window.addEventListener('load', detectAdblock);
+
+    // Check again every 4 seconds (harder to bypass)
+    setInterval(detectAdblock, 4000);
+})();
+</script>
+<!-- ===== END ANTI ADBLOCK ===== -->
+  
 </body>
 </html>
