@@ -8,7 +8,7 @@ const STORAGE = {
 };
 
 // ==================== BACKEND CONFIG ====================
-const NODEJS_URL = "https://0088e729-ea11-43c8-a211-4a55e01e432a-00-358d41x6y5xji.sisko.replit.dev"; // Correct URL
+const NODEJS_URL = "https://8fedda02-d2ca-42b8-aea9-5589cc71cda3-00-3lq8m14qx272c.sisko.replit.dev"; // Correct URL
 const API_KEY = "Sikandar123";
 
 // ==================== SEND REWARD ====================
