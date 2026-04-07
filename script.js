@@ -8,14 +8,14 @@ const STORAGE = {
 };
 
 // ==================== BACKEND CONFIG ====================
-const NODEJS_URL = "https://8fedda02-d2ca-42b8-aea9-5589cc71cda3-00-3lq8m14qx272c.sisko.replit.dev"; // Correct URL
+const NODEJS_URL = "https://8fedda02-d2ca-42b8-aea9-5589cc71cda3-00-3lq8m14qx272c.sisko.replit.dev";
 const API_KEY = "Sikandar123";
 
 // ==================== SEND REWARD ====================
-async function sendRewardToBot(username, reward) {
+async function sendRewardToBot(username, reward, endpoint = "/reward") {
   if (!reward.toLowerCase().includes("try again")) {
     try {
-      const response = await fetch(`${NODEJS_URL}/reward`, {
+      const response = await fetch(`${NODEJS_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, reward, key: API_KEY })
@@ -147,7 +147,7 @@ async function startSpin(){
       spinning=false;
       if(btn){btn.disabled=false; btn.textContent="SPIN NOW";}
       document.getElementById('spin-result')?.innerHTML=`🎉 YOU GOT: <strong>${prize.text}</strong>!`;
-      sendRewardToBot(username, prize.text);
+      sendRewardToBot(username, prize.text, "/claim");
     }
   } animate();
 }
@@ -169,7 +169,7 @@ async function claimDaily(){
     localStorage.setItem(STORAGE.bonusSpinsToday, cur+reward.spins);
   }
   alert(`✅ Day ${streak} Claimed!\n${reward.text}\nSpins added: ${reward.spins||0}`);
-  sendRewardToBot(username,reward.text);
+  sendRewardToBot(username, reward.text);
   updateStreakDisplay(); updateSpinsDisplay();
 }
 
